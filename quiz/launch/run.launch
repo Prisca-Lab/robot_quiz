@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- DEBUG | INFO | WARNING | ERROR | CRITICAL -->
+    <env name="LOG_LEVEL" value="INFO"/>
+
+
+    <arg name="condition" /> 
+    <param name="condition" value="$(arg condition)"/>
+
+    <arg name="user_id" /> 
+    <param name="user_id" value="$(arg user_id)"/>
+
+    <node name="quiz" pkg="quiz" type="quiz_node.py" output="screen"/>
+    
+
+</launch>
