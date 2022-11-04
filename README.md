@@ -1,11 +1,11 @@
 # futuro_remoto
 
 ```sh
-mkdir ~/ros_ws
-cd ~/ros_ws
+mkdir -p ~/ros_ws/src
+cd ~/ros_ws/src
 ```
 
-Clone the repo as the src folder
+Clone the repo
 ```sh
-git clone git@github.com:Prisca-Lab/quiz_futuro_remoto.git src
+git clone git@github.com:Prisca-Lab/quiz_futuro_remoto.git quiz
 ```
