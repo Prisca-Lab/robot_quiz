@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="quiz" type="quiz_node.py" name="quiz" />
+  <test test-name="test_quiz" pkg="quiz" type="test_quiz.py" />
+</launch>
