@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from script.fs_utils import load_file, load_quiz_questions
 from script.conditions import ExperimentConditions
-from script.states import Initial, HumanTurn, RobotTurn, Final
+from script.states import Initial, HumanTurn, Final, CheckAnswer, RobotSpeak, Quiz, RepeatTurn, Hint
 
 try:
     loglevel = os.environ["LOG_LEVEL"]
@@ -34,18 +34,34 @@ class StateManager:
         
         with self.sm:
 
-            StateMachine.add('Initial', Initial(), transitions={'start': 'RobotTurn'}, remapping={'data_in': 'sm_input',
-                                                                                                  'data_out': 'sm_input'})
-            StateMachine.add('RobotTurn', RobotTurn(), transitions={
-                'question': 'HumanTurn', 'finish': 'Final'}, remapping={'data_in': 'sm_input',
-                                                                        'data_out': 'sm_input'})
-            StateMachine.add('HumanTurn', HumanTurn(), transitions={
-                'respond_to_robot': 'RobotTurn'}, remapping={'data_in': 'sm_input',
-                                                             'data_out': 'sm_input'})
-            StateMachine.add('Final', Final(), transitions={
-                'succeeded': 'succeeded'}, remapping={'data_in': 'sm_input',
-                                                      'data_out': 'sm_input'})
+            StateMachine.add('Initial', Initial(), transitions={'start': 'Quiz'}, remapping={'data_in': 'sm_input',
+                                                                                            'data_out': 'sm_input'})
+            StateMachine.add('Quiz', Quiz(), transitions={
+                            'question': 'RobotSpeak', 'finish': 'Final'}, remapping={'data_in': 'sm_input',
+                                                                                    'data_out': 'sm_input'})
 
+            StateMachine.add('RobotSpeak', RobotSpeak(), transitions={'to_human': 'HumanTurn'}, remapping={'data_in': 'sm_input',
+                                                                                                        'data_out': 'sm_input'})
+
+            StateMachine.add('HumanTurn', HumanTurn(), transitions={
+                            'answer': 'CheckAnswer', 'no_answer': 'RepeatTurn', 'request_hint': 'Hint'}, remapping={'data_in': 'sm_input',
+                                                                                                                    'data_out': 'sm_input'})
+
+            StateMachine.add('RepeatTurn', RepeatTurn(), transitions={
+                            'question': 'RobotSpeak', 'next_question': 'Quiz'}, remapping={'data_in': 'sm_input',
+                                                                                            'data_out': 'sm_input'})
+
+            StateMachine.add('Hint', Hint(), transitions={
+                            'question': 'RobotSpeak'}, remapping={'data_in': 'sm_input',
+                                                                'data_out': 'sm_input'})
+
+            StateMachine.add('CheckAnswer', CheckAnswer(), transitions={
+                            'next_question': 'Quiz'}, remapping={'data_in': 'sm_input',
+                                                                'data_out': 'sm_input'})
+
+            StateMachine.add('Final', Final(), transitions={
+                            'succeeded': 'succeeded'}, remapping={'data_in': 'sm_input',
+                                                                'data_out': 'sm_input'})
         # View our state transitions using ROS by creating and starting the instrospection server
         self.sis = smach_ros.IntrospectionServer(
             'server_name', self.sm, '/SM_ROOT')
