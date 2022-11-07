@@ -23,10 +23,13 @@ class QuizQuestion:
     """data structure for a quiz question
     """
     def __init__(self, row) -> None:
-        self.question = row[0]
-        self.available_answers = [row[1], row[2], row[3], row[4]]
-        self.correct_answer = row[5]
+        self.row_df = row
+        self.question = row[["DOMANDA"]]
+        self.available_answers = row[["RISP1","RISP2","RISP3","RISP4"]]
+        self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
+        
         self.done = False
+        
 
     def check(self, answer) -> bool:
         """check if the answer is correct
@@ -37,3 +40,13 @@ class QuizQuestion:
         else:
             return False
 
+    def get_hinted(self) -> str:
+        """return a question that contains a correct answer and a wrong answer
+        """
+
+        correct_answer = self.row_df[self.correct_answer_idx.values]
+        wrong_answers = self.available_answers.drop(self.correct_answer_idx)
+        w1 = wrong_answers.iloc[[0]]
+        hinted = pd.concat([correct_answer.T, w1])
+        return hinted
+        
