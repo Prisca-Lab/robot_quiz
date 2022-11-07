@@ -33,4 +33,4 @@ If a bag is already recorded containing data from the user, an error is raised a
 
 State Machine
 
-![img](/src/quiz/data/sm.png)
+![img](quiz/data/sm.png)
