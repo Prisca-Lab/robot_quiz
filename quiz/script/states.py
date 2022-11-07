@@ -102,6 +102,14 @@ class Hint(State):
 
 
 class CheckAnswer(State):
+    """comment according to the personality type
+        if answer is correct:
+            comment positively with personality type
+        if answer is incorrect:
+            comment negatively with personality type
+    Args:
+        State (_type_): _description_
+    """
     def __init__(self):
         State.__init__(self, outcomes=["next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
