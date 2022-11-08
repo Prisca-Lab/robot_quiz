@@ -46,17 +46,6 @@ class Quiz(State):
         data_dict_out = userdata.data_in
         questions = data_dict_out['quiz_questions']
 
-        if 'is_last_question_correct' in data_dict_out:
-            if data_dict_out['is_last_question_correct'] == True:
-                # say positive feedback
-                rospy.logerr('Last question was correct')
-            elif data_dict_out['is_last_question_correct'] == False:
-                # say negative feedback
-                rospy.logerr('Last question was wrong')
-        else:
-            rospy.loginfo('Next question')
-            pass
-
         for q in questions:
             if q.done == False:
                 data_dict_out['tentative'] = 1
@@ -195,8 +184,16 @@ class CheckAnswer(State):
         data_dict_out = userdata.data_in
 
         # check if answer is correct
-        data_dict_out['is_last_question_correct'] = data_dict_out['current_question'].check(
+        is_answer_correct = data_dict_out['current_question'].check(
             data_dict_out['answer'])
+
+        if is_answer_correct == True:
+            # say positive feedback
+            rospy.logerr('Last question was correct')
+        elif is_answer_correct == False:
+            # say negative feedback
+            rospy.logerr('Last question was wrong')
+
         userdata.data_out = data_dict_out
 
         return 'next_question'
