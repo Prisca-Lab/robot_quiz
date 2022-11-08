@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-
-import sys
 import os
-
 
 from picovoice_ros.srv import AskUser, AskUserResponse
 
@@ -12,10 +9,7 @@ import wave
 import struct
 import time
 
-from pathlib import Path
 import rospy
-import logging
-log = logging.getLogger(__name__)
 
 
 MODEL = os.path.join(os.path.dirname(os.path.dirname(
