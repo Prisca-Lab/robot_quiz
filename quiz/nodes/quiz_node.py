@@ -30,12 +30,9 @@ class QuizNode(object):
 
         self.questions = load_quiz_questions()
 
-        self.personalities = load_file("personalities.csv")
-
         story = load_file("story.txt")
-        # get only the personalities associated with the condition
-        self.personality = self.personalities[self.personalities.NOME_TIPO ==
-                                              self.condition.personality.name]
+
+        self.personality = Personality(self.condition.personality.name)
 
         self.state_manager = StateManager(
             {"story": story, "quiz_questions": self.questions, "personality": self.personality})
