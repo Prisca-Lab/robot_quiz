@@ -44,7 +44,7 @@ class QuizQuestion:
     def get_hinted(self) -> str:
         """return a question that contains a correct answer and a wrong answer
         """
-        hinted = QuizQuestion(self.row_df)
+        hinted = self # is needed to maintain same id and not create a new object
 
         correct_answer = self.row_df[self.correct_answer_idx.values]
         wrong_answers = self.available_answers.drop(self.correct_answer_idx)
