@@ -178,7 +178,8 @@ class CheckAnswer(State):
         data_dict_out = userdata.data_in
 
         # check if answer is correct
-        # data_dict_out['response']
+        data_dict_out['is_last_question_correct'] = data_dict_out['current_question'].check(
+            data_dict_out['answer'])
         userdata.data_out = data_dict_out
 
 
