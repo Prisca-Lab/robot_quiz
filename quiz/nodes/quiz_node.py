@@ -24,7 +24,6 @@ class QuizNode(object):
     game_over = False
 
     def __init__(self, user_id: int, condition: ExperimentConditions):
-        rospy.init_node('quiz_node')
         self.user_id = user_id
         self.condition = condition
 
@@ -51,6 +50,7 @@ class QuizNode(object):
 
 
 if __name__ == "__main__":
+    rospy.init_node('quiz_node')
     try:
         user_id = rospy.get_param("user_id")
         condition_int = rospy.get_param("condition")

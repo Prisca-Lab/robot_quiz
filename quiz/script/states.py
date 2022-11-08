@@ -190,9 +190,13 @@ class CheckAnswer(State):
         if is_answer_correct == True:
             # say positive feedback
             rospy.logerr('Last question was correct')
+            sentence = userdata.data_in['personality'].get_positive()
+            rospy.loginfo(sentence)
         elif is_answer_correct == False:
             # say negative feedback
             rospy.logerr('Last question was wrong')
+            sentence = userdata.data_in['personality'].get_negative()
+            rospy.loginfo(sentence)
 
         data_dict_out['current_question'].done = True
         userdata.data_out = data_dict_out

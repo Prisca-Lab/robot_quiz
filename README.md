@@ -35,3 +35,9 @@ If a bag is already recorded containing data from the user, an error is raised a
 State Machine
 
 ![img](quiz/data/sm.png)
+
+
+```
+rosrun picovoice_driver picovoice_driver_rhino _access_key:=30uXi1g4+23OWdquCouuIax2CfKWmTzfvC9IFkSrYmhKTAapX1q4Zg== _model_url:=...
+
+```
