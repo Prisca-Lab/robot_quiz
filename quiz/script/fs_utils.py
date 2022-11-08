@@ -69,19 +69,23 @@ class Personality:
         
         # use cycle to iterate over the same list
         self.hint = cycle(self.on_hint[self.on_hint["NOME_TIPO"] == type].values.tolist())
-        self.positive_fb = cycle(fb["POSITIVE_FB"].values.tolist())
-        self.negative_fb = cycle(fb["NEGATIVE_FB"].values.tolist())
+        self.positive_fb = cycle(fb["POSITIVE_FB"].tolist())
+        self.negative_fb = cycle(fb["NEGATIVE_FB"].tolist())
 
         self.counter_hint = 0
         self.counter_positive_fb = 0
         self.counter_negative_fb = 0
 
     def get_positive(self):
-        return next(self.hint)[1] # [0] is the name of the personality type; [1] is the feedback sentence
+        return next(self.positive_fb)
 
     def get_negative(self):
-        return next(self.negative_fb)[1] # [0] is the name of the personality type; [1] is the feedback sentence
+        return next(self.negative_fb)
 
     def get_hint(self):
         return next(self.hint)[1] # [0] is the name of the personality type; [1] is the feedback sentence
 
+
+if __name__ == '__main__':
+    P = Personality("AGREEABLENESS")
+    print(P.get_positive())
