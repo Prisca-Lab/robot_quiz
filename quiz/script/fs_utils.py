@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import pandas as pd
+from itertools import cycle
 
 
 def load_quiz_questions():
@@ -55,3 +56,32 @@ class QuizQuestion:
         
         return hinted
         
+class Personality:
+    def __init__(self, type: str) -> None:
+        """
+        type (str): AGREEABLENESS | ANTAGONIST
+        """
+        self.name = type
+        self.on_hint = load_file("on_hint_personality.csv")
+        self.feedback = load_file("feedback_personality.csv")
+
+        fb = self.feedback[self.feedback["NOME_TIPO"] == type]
+        
+        # use cycle to iterate over the same list
+        self.hint = cycle(self.on_hint[self.on_hint["NOME_TIPO"] == type].values.tolist())
+        self.positive_fb = cycle(fb["POSITIVE_FB"].values.tolist())
+        self.negative_fb = cycle(fb["NEGATIVE_FB"].values.tolist())
+
+        self.counter_hint = 0
+        self.counter_positive_fb = 0
+        self.counter_negative_fb = 0
+
+    def get_positive(self):
+        return next(self.hint)[1] # [0] is the name of the personality type; [1] is the feedback sentence
+
+    def get_negative(self):
+        return next(self.negative_fb)[1] # [0] is the name of the personality type; [1] is the feedback sentence
+
+    def get_hint(self):
+        return next(self.hint)[1] # [0] is the name of the personality type; [1] is the feedback sentence
+
