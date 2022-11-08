@@ -1,3 +1,0 @@
-[submodule "picovoice_ros"]
-	path = picovoice_ros
-	url = git@github.com:Prisca-Lab/picovoice_recognition.git
