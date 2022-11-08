@@ -8,12 +8,19 @@ from time import sleep  # Handle time
 from std_msgs.msg import String
 
 
-TIME_OUT = 2
+TIME_OUT = 10
 STATE_INIT_SLEEP = 2
 
-INTENT_OPTIONS = ['risposta_uno','risposta_due','risposta_tre','risposta_quattro']
+INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
+                  'risposta_tre', 'risposta_quattro']
+
+
+INTENT_OPTIONS = ['RISP1', 'RISP2', 'RISP3', 'RISP4']
+
+
 class Initial(State):
     """Read Initial story and initiate the quiz"""
+
     def __init__(self):
         State.__init__(self, outcomes=['start'],  input_keys=['data_in'],
                        output_keys=['data_out'])
@@ -56,15 +63,16 @@ class Quiz(State):
                 data_dict_out['current_question'] = q
                 userdata.data_out = data_dict_out
                 return 'question'
-        
+
         userdata.data_out = data_dict_out
         return 'finish'
+
 
 class RobotSpeak(State):
     def __init__(self):
         State.__init__(self, outcomes=["to_human"], input_keys=[
             "data_in"], output_keys=["data_out"])
-        
+
         self.pub = rospy.Publisher('/tts', String, queue_size=10)
 
     def execute(self, userdata):
@@ -73,20 +81,20 @@ class RobotSpeak(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
 
-        question = data_dict_out['current_question'].question
-        rospy.loginfo(question.values)
-        self.pub.publish(question)
+        question = data_dict_out['current_question']
+        rospy.loginfo(question.question.values)
+        rospy.loginfo(question.available_answers.values)
+        # self.pub.publish(question.question.values[0])
 
         userdata.data_out = data_dict_out
         return 'to_human'
-
 
 
 class HumanTurn(State):
     def __init__(self):
         State.__init__(self, outcomes=["answer", "no_answer", "request_hint"], input_keys=[
             "data_in"], output_keys=["data_out"])
-        #subscribe to a node that returns the intent of the user
+        # subscribe to a node that returns the intent of the user
         self.answer = None
 
     def callback(self, data):
@@ -104,7 +112,7 @@ class HumanTurn(State):
             rospy.loginfo(f'Waiting {TIME_OUT} seconds for user response')
             response = rospy.wait_for_message(
                 'human_response', String, timeout=TIME_OUT).data
-            
+
             if response in INTENT_OPTIONS:
                 data_dict_out['answer'] = response
                 userdata.data_out = data_dict_out
@@ -112,6 +120,9 @@ class HumanTurn(State):
 
             elif response == 'suggerimento':
                 return 'request_hint'
+
+            else:
+                rospy.logerr("Intent not recognized")
 
         except rospy.ROSException as e:
             rospy.logerr(e)
@@ -140,7 +151,6 @@ class RepeatTurn(State):
             return 'next_question'
 
 
-
 class Hint(State):
     def __init__(self):
         State.__init__(self, outcomes=["question"], input_keys=[
@@ -167,6 +177,7 @@ class CheckAnswer(State):
     Args:
         State (_type_): _description_
     """
+
     def __init__(self):
         State.__init__(self, outcomes=["next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
@@ -181,6 +192,8 @@ class CheckAnswer(State):
         data_dict_out['is_last_question_correct'] = data_dict_out['current_question'].check(
             data_dict_out['answer'])
         userdata.data_out = data_dict_out
+
+        return 'next_question'
 
 
 class Final(State):
