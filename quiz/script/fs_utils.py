@@ -43,10 +43,13 @@ class QuizQuestion:
     def get_hinted(self) -> str:
         """return a question that contains a correct answer and a wrong answer
         """
+        hinted = QuizQuestion(self.row_df)
 
         correct_answer = self.row_df[self.correct_answer_idx.values]
         wrong_answers = self.available_answers.drop(self.correct_answer_idx)
         w1 = wrong_answers.iloc[[0]]
-        hinted = pd.concat([correct_answer.T, w1])
+        hinted_answers = pd.concat([correct_answer.T, w1])
+        hinted.available_answers = hinted_answers
+        
         return hinted
         
