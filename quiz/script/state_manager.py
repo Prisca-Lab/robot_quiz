@@ -30,7 +30,7 @@ class StateManager:
                                                                                'data_out': 'sm_input'})
 
             StateMachine.add('Hint', Hint(), transitions={
-                'question': 'RobotSpeak'}, remapping={'data_in': 'sm_input',
+                'question': 'RobotSpeak','next_question': 'Quiz'}, remapping={'data_in': 'sm_input',
                                                       'data_out': 'sm_input'})
 
             StateMachine.add('CheckAnswer', CheckAnswer(), transitions={

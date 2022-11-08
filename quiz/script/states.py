@@ -153,7 +153,7 @@ class RepeatTurn(State):
 
 class Hint(State):
     def __init__(self):
-        State.__init__(self, outcomes=["question"], input_keys=[
+        State.__init__(self, outcomes=["question", "next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
 
     def execute(self, userdata):
@@ -162,10 +162,16 @@ class Hint(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         question = data_dict_out['current_question']
-        hinted_question = question.get_hinted()
-        data_dict_out['current_question'] = hinted_question
-        userdata.data_out = data_dict_out
-        return 'question'
+
+        if question.type == "question":
+            hinted_question = question.get_hinted()
+            data_dict_out['current_question'] = hinted_question
+            userdata.data_out = data_dict_out
+            return 'question'
+        else:
+            rospy.logerr('Questions can only be hinted one time')
+            question.done = True
+            return 'next_question'
 
 
 class CheckAnswer(State):
@@ -244,8 +250,8 @@ def main():
                                                                                         'data_out': 'sm_input'})
 
         StateMachine.add('Hint', Hint(), transitions={
-                         'question': 'RobotSpeak'}, remapping={'data_in': 'sm_input',
-                                                               'data_out': 'sm_input'})
+                         'question': 'RobotSpeak', 'next_question': 'Quiz'}, remapping={'data_in': 'sm_input',
+                                                                                        'data_out': 'sm_input'})
 
         StateMachine.add('CheckAnswer', CheckAnswer(), transitions={
                          'next_question': 'Quiz'}, remapping={'data_in': 'sm_input',

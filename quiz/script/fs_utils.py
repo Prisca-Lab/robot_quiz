@@ -29,6 +29,7 @@ class QuizQuestion:
         self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
         
         self.done = False
+        self.type = "question"
         
 
     def check(self, answer) -> bool:
@@ -50,6 +51,7 @@ class QuizQuestion:
         w1 = wrong_answers.iloc[[0]]
         hinted_answers = pd.concat([correct_answer.T, w1])
         hinted.available_answers = hinted_answers
+        hinted.type = "hinted"
         
         return hinted
         
