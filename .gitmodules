@@ -1,3 +1,0 @@
-[submodule "picovoice_ros"]
-	path = picovoice_ros
-	url = git@github.com:vignif/picovoice_ros.git
