@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from script.fs_utils import load_file, load_quiz_questions
+from script.fs_utils import load_file, load_quiz_questions, Personality
 from script.conditions import ExperimentConditions
 from script.state_manager import StateManager
 
