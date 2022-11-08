@@ -38,7 +38,18 @@ class Quiz(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         questions = data_dict_out['quiz_questions']
-        
+
+        if 'is_last_question_correct' in data_dict_out:
+            if data_dict_out['is_last_question_correct'] == True:
+                # say positive feedback
+                rospy.logerr('Last question was correct')
+            elif data_dict_out['is_last_question_correct'] == False:
+                # say negative feedback
+                rospy.logerr('Last question was wrong')
+        else:
+            rospy.loginfo('Next question')
+            pass
+
         for q in questions:
             if q.done == False:
                 data_dict_out['tentative'] = 1
