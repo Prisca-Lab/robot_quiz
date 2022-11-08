@@ -159,7 +159,7 @@ class Hint(State):
             return 'question'
         else:
             rospy.logerr('Questions can only be hinted one time')
-            question.done = True
+            data_dict_out['current_question'].done = True
             return 'next_question'
 
 
@@ -194,6 +194,7 @@ class CheckAnswer(State):
             # say negative feedback
             rospy.logerr('Last question was wrong')
 
+        data_dict_out['current_question'].done = True
         userdata.data_out = data_dict_out
 
         return 'next_question'
