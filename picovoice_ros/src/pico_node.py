@@ -88,12 +88,10 @@ class IntentRecognition:
                 self.wav_file = wave.open(self._output_path, "w")
                 self.wav_file.setparams((1, 2, 16000, 512, "NONE", "NONE"))
 
-            print(self.rhino.context_info)
-            print()
+            rospy.loginfo(self.rhino.context_info)
 
-            print("Using device: %s" % self.recorder.selected_device)
-            print("Listening...")
-            print()
+            rospy.loginfo(f"Using device: {self.recorder.selected_device}")
+            rospy.loginfo(f"Detecting intent for {max_seconds} seconds")
             start = time.time()
             while time.time() - start < max_seconds:
                 pcm = self.recorder.read()
@@ -120,6 +118,7 @@ class IntentRecognition:
                         print("Didn't understand the command.\n")
         except Exception as e:
             rospy.logerr(e)
+        self.recorder.delete()
 
     def stop(self):
         if self.recorder is not None:
@@ -138,9 +137,8 @@ class PicoNode:
         self.intent_recognition = IntentRecognition()
 
     def handle_user(self, req):
-        # print("Returning [%s + %s = %s]"%(req.a, req.b, (req.a + req.b)))
         val = self.intent_recognition.run()
-        print(val)
+        rospy.loginfo(f'Intent: {val}')
         return AskUserResponse(val)
 
 
