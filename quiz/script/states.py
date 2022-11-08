@@ -9,7 +9,7 @@ from std_msgs.msg import String
 
 
 TIME_OUT = 2
-STATE_INIT_SLEEP = 1
+STATE_INIT_SLEEP = 2
 
 INTENT_OPTIONS = ['risposta_uno','risposta_due','risposta_tre','risposta_quattro']
 class Initial(State):
@@ -41,7 +41,7 @@ class Quiz(State):
         
         for q in questions:
             if q.done == False:
-                data_dict_out['counter_current_question'] = 0
+                data_dict_out['tentative'] = 1
                 data_dict_out['current_question'] = q
                 userdata.data_out = data_dict_out
                 return 'question'
@@ -76,7 +76,6 @@ class HumanTurn(State):
         State.__init__(self, outcomes=["answer", "no_answer", "request_hint"], input_keys=[
             "data_in"], output_keys=["data_out"])
         #subscribe to a node that returns the intent of the user
-        self.sub = rospy.Subscriber('/answer', String, self.callback)
         self.answer = None
 
     def callback(self, data):
@@ -87,6 +86,7 @@ class HumanTurn(State):
         rospy.loginfo(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
+        self.sub = rospy.Subscriber('/answer', String, self.callback)
         data_dict_out = userdata.data_in
 
         try:
@@ -119,12 +119,13 @@ class RepeatTurn(State):
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
-
-        data_dict_out['counter_current_question'] += 1
+        rospy.logerr(data_dict_out['tentative'])
         userdata.data_out = data_dict_out
-        if data_dict_out['counter_current_question'] < 2:
+        if data_dict_out['tentative'] < 2:
+            data_dict_out['tentative'] += 1
             return 'question'
         else:
+            data_dict_out['current_question'].done = True
             return 'next_question'
 
 
