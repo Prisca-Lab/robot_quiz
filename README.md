@@ -1,13 +1,14 @@
 # futuro_remoto
 
 ```sh
-mkdir -p ~/ros_ws/src
-cd ~/ros_ws/src
+mkdir ~/ros_ws
+cd ~/ros_ws
 ```
 
-Clone the repo
+Clone the repo as source folder
 ```sh
-git clone git@github.com:Prisca-Lab/quiz_futuro_remoto.git quiz
+git clone git@github.com:Prisca-Lab/quiz_futuro_remoto.git src
+git submodule update --init --recursive
 ```
 
 Build and source
