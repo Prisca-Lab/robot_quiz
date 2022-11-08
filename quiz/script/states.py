@@ -63,7 +63,7 @@ class RobotSpeak(State):
         data_dict_out = userdata.data_in
 
         question = data_dict_out['current_question'].question
-        rospy.loginfo(question)
+        rospy.loginfo(question.values)
         self.pub.publish(question)
 
         userdata.data_out = data_dict_out
