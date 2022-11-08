@@ -23,3 +23,8 @@ class TestQuestions(unittest.TestCase):
         hinted = q[0].get_hinted()
         self.assertTrue(len(hinted) == 2)
 
+    def test_hinted_question_has_correct_answer(self):
+        q = load_quiz_questions()
+        self.assertFalse(q[0].check("RISP1"))
+        self.assertTrue(q[0].check("RISP4"))
+        print()

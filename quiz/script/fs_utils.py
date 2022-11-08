@@ -35,7 +35,7 @@ class QuizQuestion:
         """check if the answer is correct
         """
         self.done = True
-        if answer == self.correct_answer:
+        if answer == self.correct_answer_idx.values[0]:
             return True
         else:
             return False
