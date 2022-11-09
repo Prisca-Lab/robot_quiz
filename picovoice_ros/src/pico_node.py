@@ -91,7 +91,8 @@ class IntentRecognition:
                 pcm = self.recorder.read()
 
                 if self.wav_file is not None:
-                    self.wav_file.writeframes(struct.pack("h" * len(pcm), *pcm))
+                    self.wav_file.writeframes(
+                        struct.pack("h" * len(pcm), *pcm))
 
                 is_finalized = self.rhino.process(pcm)
                 if is_finalized:
@@ -104,7 +105,7 @@ class IntentRecognition:
                             print("    %s : '%s'" % (slot, value))
                         print('  }')
                         print('}\n')
-                        self.intent= inference.intent
+                        self.intent = inference.intent
                         self.recorder.delete()
                         return self.intent
                     else:
