@@ -49,8 +49,9 @@ class QuizQuestion:
             return False
 
     def get_text(self):
+        """build the string object containg the question and possible answers
+        """
         title_values = zip(self.available_answers.index.to_list(), self.available_answers.values.tolist())
-        
         options = ""
         for title, value in title_values:
             options += title + ", " + value + ". "
@@ -65,7 +66,7 @@ class QuizQuestion:
         correct_answer = self.row_df[self.correct_answer_idx.values]
         wrong_answers = self.available_answers.drop(self.correct_answer_idx)
         w1 = wrong_answers.iloc[[0]]
-        hinted_answers = pd.concat([correct_answer.T, w1])
+        hinted_answers = pd.concat([w1, correct_answer.T])
         hinted.available_answers = hinted_answers
         hinted.text = hinted.get_text()
         hinted.type = "hinted"
