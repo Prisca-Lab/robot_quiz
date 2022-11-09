@@ -7,6 +7,7 @@ import smach_ros  # Extensions for SMACH library to integrate it with ROS
 from time import sleep  # Handle time
 from std_msgs.msg import String
 from picovoice_ros.srv import AskUser
+from script.pal_speech_client import Speech
 
 TIME_OUT = 10
 STATE_INIT_SLEEP = 2
@@ -24,12 +25,14 @@ class Initial(State):
     def __init__(self):
         State.__init__(self, outcomes=['start'],  input_keys=['data_in'],
                        output_keys=['data_out'])
+        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         pub = rospy.Publisher('robot_initial_speech', String, queue_size=10)
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
+        self.client.text_to_speech("Iniziamo!")
         pub.publish(userdata.data_in['story'])
         return 'start'
 
@@ -61,8 +64,7 @@ class RobotSpeak(State):
     def __init__(self):
         State.__init__(self, outcomes=["to_human"], input_keys=[
             "data_in"], output_keys=["data_out"])
-
-        self.pub = rospy.Publisher('/tts', String, queue_size=10)
+        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
@@ -73,6 +75,7 @@ class RobotSpeak(State):
         question = data_dict_out['current_question']
         rospy.loginfo(question.question.values)
         rospy.loginfo(question.available_answers.values)
+        self.client.text_to_speech(question.text)
         # self.pub.publish(question.question.values[0])
 
         userdata.data_out = data_dict_out
