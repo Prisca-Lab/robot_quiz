@@ -32,7 +32,7 @@ class Initial(State):
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         self.client.text_to_speech("Iniziamo!")
-        story = userdata.data_in['story']        
+        story = userdata.data_in['story']
         self.client.text_to_speech(story)
         return 'start'
 
@@ -103,7 +103,7 @@ class HumanTurn(State):
             rospy.loginfo(f'Waiting {TIME_OUT} seconds for user response')
             rospy.wait_for_service('ask_user', timeout=TIME_OUT)
             proxy = rospy.ServiceProxy('ask_user', AskUser)
-            
+
             proxy_response = proxy("")
             response = proxy_response.user_intent
             rospy.loginfo(response)
