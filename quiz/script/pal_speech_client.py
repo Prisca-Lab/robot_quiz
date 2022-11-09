@@ -13,7 +13,8 @@ class Speech():
     # rospy.init_node('speech_client')
     #change it to tts if you're using from the tiago
     #TODO change the name of the action to tts
-    self.client = actionlib.SimpleActionClient('/tts', TtsAction)
+    self.name_server = "/tts"
+    self.client = actionlib.SimpleActionClient(self.name_server, TtsAction)
     self.sound_client = SoundClient()
     self.language = language
     self.reproduction_has_ended = False
@@ -45,9 +46,10 @@ class Speech():
       
 
   def text_to_speech(self, text, locked=True):
-    rospy.loginfo("Waiting for Server")
-    self.client.wait_for_server()
-    rospy.loginfo("Reached Server")
+    try:
+      self.client.wait_for_server(timeout=rospy.Duration(10))
+    except Exception as e:
+      rospy.logerr(f"Action server {self.name_server}, \treason: {e}")
     goal = TtsGoal()
     goal.rawtext.text = text
     goal.rawtext.lang_id = self.language
