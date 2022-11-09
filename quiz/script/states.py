@@ -6,7 +6,7 @@ from smach import State, StateMachine  # State machine library
 import smach_ros  # Extensions for SMACH library to integrate it with ROS
 from time import sleep  # Handle time
 from std_msgs.msg import String
-
+from picovoice_ros.srv import AskUser
 
 TIME_OUT = 10
 STATE_INIT_SLEEP = 2
@@ -15,7 +15,7 @@ INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
 
 
-INTENT_OPTIONS = ['RISP1', 'RISP2', 'RISP3', 'RISP4']
+# INTENT_OPTIONS = ['RISP1', 'RISP2', 'RISP3', 'RISP4']
 
 
 class Initial(State):
@@ -94,20 +94,22 @@ class HumanTurn(State):
         rospy.loginfo(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
-        self.sub = rospy.Subscriber('/answer', String, self.callback)
         data_dict_out = userdata.data_in
 
         try:
             rospy.loginfo(f'Waiting {TIME_OUT} seconds for user response')
-            response = rospy.wait_for_message(
-                'human_response', String, timeout=TIME_OUT).data
-
+            rospy.wait_for_service('ask_user', timeout=TIME_OUT)
+            proxy = rospy.ServiceProxy('ask_user', AskUser)
+            
+            proxy_response = proxy("")
+            response = proxy_response.user_input
+            rospy.loginfo(response)
             if response in INTENT_OPTIONS:
                 data_dict_out['answer'] = response
                 userdata.data_out = data_dict_out
                 return 'answer'
 
-            elif response == 'suggerimento':
+            elif response == "suggerimento":
                 return 'request_hint'
 
             else:

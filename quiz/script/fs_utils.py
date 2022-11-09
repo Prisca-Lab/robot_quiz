@@ -3,6 +3,9 @@ from pathlib import Path
 import pandas as pd
 from itertools import cycle
 
+INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
+                  'risposta_tre', 'risposta_quattro']
+
 
 def load_quiz_questions():
     questions_df = load_file("questions.csv")
@@ -26,7 +29,7 @@ class QuizQuestion:
     def __init__(self, row) -> None:
         self.row_df = row
         self.question = row[["DOMANDA"]]
-        self.available_answers = row[["RISP1","RISP2","RISP3","RISP4"]]
+        self.available_answers = row[INTENT_OPTIONS]
         self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
         
         self.done = False
