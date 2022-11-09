@@ -102,7 +102,7 @@ class HumanTurn(State):
             proxy = rospy.ServiceProxy('ask_user', AskUser)
             
             proxy_response = proxy("")
-            response = proxy_response.user_input
+            response = proxy_response.user_intent
             rospy.loginfo(response)
             if response in INTENT_OPTIONS:
                 data_dict_out['answer'] = response
