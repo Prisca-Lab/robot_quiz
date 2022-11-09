@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 
 from picovoice_ros.srv import AskUser, AskUserResponse
 
@@ -73,6 +74,7 @@ class IntentRecognition:
 
         self.recorder = PvRecorder(
             device_index=self._audio_device_index, frame_length=self.rhino.frame_length)
+        rospy.loginfo(self.recorder.get_audio_devices())
         self.recorder.start()
 
         self.wav_file = None
@@ -129,9 +131,9 @@ class IntentRecognition:
 
 
 class PicoNode:
-    def __init__(self) -> None:
+    def __init__(self, device_idx) -> None:
         self.service = rospy.Service('ask_user', AskUser, self.handle_user)
-        self.intent_recognition = IntentRecognition()
+        self.intent_recognition = IntentRecognition(audio_device_index=device_idx)
 
     def handle_user(self, req):
         val = self.intent_recognition.run()
@@ -141,5 +143,9 @@ class PicoNode:
 
 if __name__ == '__main__':
     rospy.init_node('pico_node')
-    P = PicoNode()
+    rospy.myargv(argv=sys.argv)
+
+    device_idx = rospy.get_param("~device")
+    rospy.loginfo(f"Selected device at index: {device_idx}")
+    P = PicoNode(device_idx)
     rospy.spin()
