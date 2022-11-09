@@ -59,7 +59,7 @@ class IntentRecognition:
             print("If all other arguments seem valid, ensure that '%s' is a valid AccessKey" %
                   self._access_key)
             raise e
-        self.intent = None
+        self.intent = "no_answer"
         print("Intent started")
 
     def run(self, max_seconds=10):
@@ -109,8 +109,10 @@ class IntentRecognition:
                         self.recorder.delete()
                         return self.intent
                     else:
-                        self.intent = None
+                        # self.intent = None
                         print("Didn't understand the command.\n")
+            self.recorder.delete()
+            return self.intent
         except Exception as e:
             rospy.logerr(e)
         self.recorder.delete()

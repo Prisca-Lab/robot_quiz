@@ -112,6 +112,9 @@ class HumanTurn(State):
             elif response == "suggerimento":
                 return 'request_hint'
 
+            elif response == "no_answer":
+                rospy.loginfo("User did not answer")
+                return "no_answer"
             else:
                 rospy.logerr("Intent not recognized")
 
@@ -132,7 +135,7 @@ class RepeatTurn(State):
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
-        rospy.logerr(data_dict_out['tentative'])
+        rospy.loginfo(f"Tentative: {data_dict_out['tentative']}")
         userdata.data_out = data_dict_out
         if data_dict_out['tentative'] < 2:
             data_dict_out['tentative'] += 1
