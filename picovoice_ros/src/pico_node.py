@@ -146,6 +146,7 @@ if __name__ == '__main__':
     rospy.myargv(argv=sys.argv)
 
     device_idx = rospy.get_param("~device")
+    rospy.loginfo(f'Available audio devices {PvRecorder.get_audio_devices()}')
     rospy.loginfo(f"Selected device at index: {device_idx}")
     P = PicoNode(device_idx)
     rospy.spin()
