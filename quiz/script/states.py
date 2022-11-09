@@ -28,12 +28,12 @@ class Initial(State):
         self.client = Speech("it_IT")
 
     def execute(self, userdata):
-        pub = rospy.Publisher('robot_initial_speech', String, queue_size=10)
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         self.client.text_to_speech("Iniziamo!")
-        pub.publish(userdata.data_in['story'])
+        story = userdata.data_in['story']        
+        self.client.text_to_speech(story)
         return 'start'
 
 
