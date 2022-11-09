@@ -38,6 +38,5 @@ State Machine
 
 
 ```
-rosrun picovoice_driver picovoice_driver_rhino _access_key:=30uXi1g4+23OWdquCouuIax2CfKWmTzfvC9IFkSrYmhKTAapX1q4Zg== _model_url:=...
-
+rosrun picovoice_ros pico_node.py _device:=-1
 ```
