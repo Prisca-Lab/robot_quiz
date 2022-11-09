@@ -25,15 +25,17 @@ def load_file(filename):
 
 class QuizQuestion:
     """data structure for a quiz question
+    row: pandas dataframe of a question
+    type: question | hinted
     """
-    def __init__(self, row) -> None:
+    def __init__(self, row, type="question") -> None:
         self.row_df = row
+        self.type = type
         self.question = row[["DOMANDA"]]
         self.available_answers = row[INTENT_OPTIONS]
         self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
         
         self.done = False
-        self.type = "question"
         
 
     def check(self, answer) -> bool:
