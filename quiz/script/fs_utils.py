@@ -77,10 +77,6 @@ class Personality:
         self.positive_fb = cycle(fb["POSITIVE_FB"].tolist())
         self.negative_fb = cycle(fb["NEGATIVE_FB"].tolist())
 
-        self.counter_hint = 0
-        self.counter_positive_fb = 0
-        self.counter_negative_fb = 0
-
     def get_positive(self):
         return next(self.positive_fb)
 
