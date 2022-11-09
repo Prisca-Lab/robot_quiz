@@ -66,12 +66,16 @@ class QuizQuestion:
         correct_answer = self.row_df[self.correct_answer_idx.values]
         wrong_answers = self.available_answers.drop(self.correct_answer_idx)
         w1 = wrong_answers.iloc[[0]]
-        hinted_answers = pd.concat([w1, correct_answer.T])
+        hinted_answers = pd.concat([correct_answer.T, w1]) if correct_answer.index[0] == "risposta_uno" else pd.concat([w1, correct_answer.T])
         hinted.available_answers = hinted_answers
         hinted.text = hinted.get_text()
         hinted.type = "hinted"
         
         return hinted
+
+    @property
+    def len(self):
+        return len(self.available_answers)
         
 class Personality:
     def __init__(self, type: str) -> None:

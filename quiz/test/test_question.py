@@ -21,10 +21,11 @@ class TestQuestions(unittest.TestCase):
     def test_hinted_question_has_length_2(self):
         q = load_quiz_questions()
         hinted = q[0].get_hinted()
-        self.assertTrue(len(hinted) == 2)
+        q[1].get_hinted()
+        self.assertTrue(hinted.len == 2)
 
     def test_hinted_question_has_correct_answer(self):
         q = load_quiz_questions()
-        self.assertFalse(q[0].check("RISP1"))
-        self.assertTrue(q[0].check("RISP4"))
+        self.assertFalse(q[0].check("risposta_uno"))
+        self.assertTrue(q[0].check("risposta_quattro"))
         print()
