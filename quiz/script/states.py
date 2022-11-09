@@ -10,7 +10,7 @@ from picovoice_ros.srv import AskUser
 from script.pal_speech_client import Speech
 
 TIME_OUT = 10
-STATE_INIT_SLEEP = 2
+STATE_INIT_SLEEP = 0.5
 
 INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
@@ -32,8 +32,8 @@ class Initial(State):
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         self.client.text_to_speech("Iniziamo!")
-        story = userdata.data_in['story']
-        self.client.text_to_speech(story)
+        # story = userdata.data_in['story']
+        # self.client.text_to_speech(story)
         return 'start'
 
 
@@ -152,6 +152,7 @@ class Hint(State):
     def __init__(self):
         State.__init__(self, outcomes=["question", "next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
+        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
@@ -159,7 +160,8 @@ class Hint(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         question = data_dict_out['current_question']
-
+        hint = data_dict_out['personality'].get_hint()
+        self.client.text_to_speech(hint)
         if question.type == "question":
             hinted_question = question.get_hinted()
             data_dict_out['current_question'] = hinted_question
@@ -184,6 +186,7 @@ class CheckAnswer(State):
     def __init__(self):
         State.__init__(self, outcomes=["next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
+        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
@@ -198,14 +201,17 @@ class CheckAnswer(State):
         if is_answer_correct == True:
             # say positive feedback
             rospy.logerr('Last question was correct')
-            sentence = userdata.data_in['personality'].get_positive()
+            sentence = "Risposta corretta."
+            sentence += userdata.data_in['personality'].get_positive()
             rospy.loginfo(sentence)
         elif is_answer_correct == False:
             # say negative feedback
             rospy.logerr('Last question was wrong')
-            sentence = userdata.data_in['personality'].get_negative()
+            sentence = "Risposta sbagliata!"
+            sentence += userdata.data_in['personality'].get_negative()
             rospy.loginfo(sentence)
 
+        self.client.text_to_speech(sentence)
         data_dict_out['current_question'].done = True
         userdata.data_out = data_dict_out
 
