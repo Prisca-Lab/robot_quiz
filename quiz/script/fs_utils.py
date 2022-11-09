@@ -35,6 +35,7 @@ class QuizQuestion:
         self.available_answers = row[INTENT_OPTIONS]
         self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
         
+        self.text = self.get_text()
         self.done = False
         
 
@@ -47,6 +48,15 @@ class QuizQuestion:
         else:
             return False
 
+    def get_text(self):
+        title_values = zip(self.available_answers.index.to_list(), self.available_answers.values.tolist())
+        
+        options = ""
+        for title, value in title_values:
+            options += title + ", " + value + ". "
+
+        return self.question.values[0] + " " + options
+        
     def get_hinted(self) -> str:
         """return a question that contains a correct answer and a wrong answer
         """
@@ -57,6 +67,7 @@ class QuizQuestion:
         w1 = wrong_answers.iloc[[0]]
         hinted_answers = pd.concat([correct_answer.T, w1])
         hinted.available_answers = hinted_answers
+        hinted.text = hinted.get_text()
         hinted.type = "hinted"
         
         return hinted
