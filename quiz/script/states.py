@@ -27,7 +27,7 @@ class Initial(State):
 
     def execute(self, userdata):
         pub = rospy.Publisher('robot_initial_speech', String, queue_size=10)
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         pub.publish(userdata.data_in['story'])
@@ -40,7 +40,7 @@ class Quiz(State):
             "data_in"], output_keys=["data_out"])
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
@@ -65,7 +65,7 @@ class RobotSpeak(State):
         self.pub = rospy.Publisher('/tts', String, queue_size=10)
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
@@ -91,7 +91,7 @@ class HumanTurn(State):
         rospy.loginfo(self.answer)
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
@@ -128,7 +128,7 @@ class RepeatTurn(State):
             "data_in"], output_keys=["data_out"])
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
@@ -148,7 +148,7 @@ class Hint(State):
             "data_in"], output_keys=["data_out"])
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
@@ -180,7 +180,7 @@ class CheckAnswer(State):
             "data_in"], output_keys=["data_out"])
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
@@ -212,7 +212,7 @@ class Final(State):
                        'data_in'], output_keys=['data_out'])
 
     def execute(self, userdata):
-        rospy.loginfo(
+        rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
