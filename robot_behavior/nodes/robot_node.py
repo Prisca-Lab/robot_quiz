@@ -2,16 +2,15 @@
 
 import logging
 import rospy
-from behavior_lib.eyes_reproducer import Eyes
-from behavior_lib.gesture_reproducer import Gesture
-from behavior_lib.speech_reproducer import Speech
-from behavior_lib.abstract_behaviour import BehaviourMode
-from std_msgs.msg import Empty
-from robot_behavior.srv import ExecuteBehavior, ExecuteBehaviorResponse
 import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from behavior_lib.eyes_reproducer import Eyes
+from behavior_lib.gesture_reproducer import Gesture
+from behavior_lib.speech_reproducer import Speech
+from robot_behavior.srv import ExecuteBehavior, ExecuteBehaviorResponse
 
 try:
     loglevel = os.environ["LOG_LEVEL"]
