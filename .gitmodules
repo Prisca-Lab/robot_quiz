@@ -1,3 +1,6 @@
 [submodule "picovoice_ros/picovoice"]
 	path = picovoice_ros/picovoice
 	url = git@github.com:Prisca-Lab/picovoice_recognition.git
+[submodule "quiz/script/behaviour"]
+	path = quiz/script/behaviour
+	url = git@github.com:Prisca-Lab/robot_behaviour.git
