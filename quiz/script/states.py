@@ -5,7 +5,8 @@ import rospy  # Python client library
 from smach import State, StateMachine  # State machine library
 import smach_ros  # Extensions for SMACH library to integrate it with ROS
 from time import sleep  # Handle time
-from std_msgs.msg import String
+from robot_behavior.msg import Behavior
+from robot_behavior.srv import ExecuteBehavior
 from picovoice_ros.srv import AskUser
 from script.pal_speech_client import Speech
 
@@ -31,9 +32,27 @@ class Initial(State):
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
-        self.client.text_to_speech("Iniziamo!")
+        # self.client.text_to_speech("Iniziamo!")
+        # data_dict_out = userdata.data_in
+
+        rospy.wait_for_service('behaviour', timeout=TIME_OUT)
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+
+        proxy_response = proxy(Behavior(text="Iniziamo!", body="neutral", eyes="neutral"))
+
+        response = proxy_response.success
+        # self.pub.publish(Behaviour(text="Iniziamo!", body="neutral", eyes="neutral"))
+
+        # behaviour = userdata.data_in['robot_behaviour']()
+        # behaviour.say.data = "ECCO LA PRIMA DOMANDA"
+        # behaviour.run()
+        # behaviour.stop()
+
+        # data_dict_out['behaviour'] = behaviour
+
         # story = userdata.data_in['story']
         # self.client.text_to_speech(story)
+        # userdata.data_out = data_dict_out
         return 'start'
 
 
