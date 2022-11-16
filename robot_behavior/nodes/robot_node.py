@@ -38,10 +38,22 @@ class BehaviourNode:
 
     def cb(self, msg):
         rospy.loginfo("Received service request: %s", msg)
-        self.say.data = msg.robot_behavior.text
-        self.move_eyes.data = msg.robot_behavior.eyes
-        self.move_body.data = msg.robot_behavior.body
-        self.run()
+        
+        if msg.robot_behavior.text:
+            speech = self.modes[0]("it_IT")
+            speech.data = msg.robot_behavior.text
+            self.active_modes.append(speech)
+
+        if msg.robot_behavior.body:
+            body = self.modes[1]()
+            body.data = msg.robot_behavior.body
+            self.active_modes.append(body)
+
+        if msg.robot_behavior.eyes:
+            eyes = self.modes[2]()
+            eyes.data = msg.robot_behavior.eyes
+            self.active_modes.append(eyes)
+        return self.run()
 
     def run(self):
         try:
