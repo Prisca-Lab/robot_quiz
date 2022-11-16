@@ -37,22 +37,11 @@ class Initial(State):
 
         rospy.wait_for_service('behaviour', timeout=TIME_OUT)
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-
-        proxy_response = proxy(Behavior(text="Iniziamo!", body="neutral", eyes="neutral"))
+        
+        proxy_response = proxy(Behavior(text="Ciao!", body= "nod", eyes="sad"))
 
         response = proxy_response.success
-        # self.pub.publish(Behaviour(text="Iniziamo!", body="neutral", eyes="neutral"))
 
-        # behaviour = userdata.data_in['robot_behaviour']()
-        # behaviour.say.data = "ECCO LA PRIMA DOMANDA"
-        # behaviour.run()
-        # behaviour.stop()
-
-        # data_dict_out['behaviour'] = behaviour
-
-        # story = userdata.data_in['story']
-        # self.client.text_to_speech(story)
-        # userdata.data_out = data_dict_out
         return 'start'
 
 
