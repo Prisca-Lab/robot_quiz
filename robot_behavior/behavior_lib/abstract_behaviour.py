@@ -1,6 +1,3 @@
-# Python program showing
-# abstract base class work
-
 from abc import ABC, abstractmethod
 
 class BehaviourMode(ABC):
@@ -19,10 +16,10 @@ class BehaviourMode(ABC):
 
     @property
     def data(self):
-        print("Getting value...")
+        print(f"Getting value for {self.name}")
         return self._data
 
     @data.setter
     def data(self, value):
-        print("Setting value...")
+        print(f"Setting value: {value} for {self.name}")
         self._data = value
