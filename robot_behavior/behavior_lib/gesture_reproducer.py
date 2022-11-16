@@ -1,4 +1,3 @@
-
 # System imports
 import sys
 import time
@@ -36,6 +35,7 @@ class Gesture(BehaviourMode):
             rospy.loginfo("Execute action without waiting for result...")
         else:
             rospy.logerr("No action name passed as input")
+        return
 
     def stop(self):
         self.client.cancel_all_goals()

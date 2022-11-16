@@ -39,6 +39,7 @@ class Speech(BehaviourMode):
         except Exception as e:
             print("Cannot retrieve action server result /tts")
             exit(1)
+        return 
 
     def stop(self):
         rospy.loginfo("canceling...")

@@ -24,6 +24,7 @@ class Eyes(BehaviourMode):
             self.eyes_pub.publish(expression_msg)
         else:
             rospy.logerr("Please set data before executing")
+        return
 
     def stop(self):
         expression_msg = Expression()
