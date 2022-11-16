@@ -15,6 +15,8 @@ def move_base():
     pub = rospy.Publisher('/mobile_base_controller/cmd_vel', Twist, queue_size=10)
     rate = rospy.Rate(5) # 10hz
     linear = Vector3(0, 0, 0)
+    # negative value => rotates counter clockwise
+    # positive values => rotates clockwise
     angular = Vector3(0, 0, -0.5)
     cmd_vel = Twist(linear, angular)
     for i in range(8):
