@@ -4,3 +4,12 @@
 [submodule "quiz/script/behaviour"]
 	path = quiz/script/behaviour
 	url = git@github.com:Prisca-Lab/robot_behaviour.git
+[submodule "hri_msgs"]
+	path = hri_msgs
+	url = git@github.com:ros4hri/hri_msgs.git
+[submodule "play_motion"]
+	path = play_motion
+	url = git@github.com:pal-robotics/play_motion.git
+[submodule "pal_msgs"]
+	path = pal_msgs
+	url = git@github.com:pal-robotics/pal_msgs.git
