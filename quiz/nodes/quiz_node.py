@@ -21,8 +21,6 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=loglevel)
 
 
 class QuizNode(object):
-    game_over = False
-
     def __init__(self, user_id: int, condition: ExperimentConditions):
         self.user_id = user_id
         self.condition = condition
@@ -34,7 +32,7 @@ class QuizNode(object):
         self.personality = Personality(self.condition.personality.name)
 
         self.state_manager = StateManager(
-            {"story": story, "quiz_questions": self.questions, "personality": self.personality})
+            {"story": story, "quiz_questions": self.questions, "personality": self.personality, "condition": self.condition})
 
         rospy.loginfo(
             f'User id: {self.user_id} \t Condition: {self.condition}')
@@ -42,10 +40,6 @@ class QuizNode(object):
 
     def run(self):
         rospy.loginfo('Quiz node running')
-        # while not self.game_over:
-        # pass
-        # call logic of statemachine
-        # Execute the state machine
         outcome = self.state_manager.sm.execute()
 
 
