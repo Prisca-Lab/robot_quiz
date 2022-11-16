@@ -9,15 +9,13 @@ from robot_behavior.msg import Behavior
 from robot_behavior.srv import ExecuteBehavior
 from picovoice_ros.srv import AskUser
 from script.pal_speech_client import Speech
+from script.conditions import ExperimentConditions, BodyConditions
 
 TIME_OUT = 10
 STATE_INIT_SLEEP = 0.5
 
 INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
-
-
-# INTENT_OPTIONS = ['RISP1', 'RISP2', 'RISP3', 'RISP4']
 
 
 class Initial(State):
@@ -32,13 +30,11 @@ class Initial(State):
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
-        # self.client.text_to_speech("Iniziamo!")
-        # data_dict_out = userdata.data_in
 
         rospy.wait_for_service('behaviour', timeout=TIME_OUT)
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        
-        proxy_response = proxy(Behavior(text="Ciao!", body= "nod", eyes="sad"))
+        proxy_response = proxy(
+            Behavior(text="Iniziamo!", body="nod", eyes="neutral"))
 
         response = proxy_response.success
 
@@ -56,6 +52,15 @@ class Quiz(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         questions = data_dict_out['quiz_questions']
+        if BodyConditions.SIDE == data_dict_out['condition'].body:
+            # call function to rotate the body!
+            pass
+
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+        proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
+
+        # TODO add domanda n. before the next question
+        # TODO add backup loop (if user not answer insert key)
 
         for q in questions:
             if q.done == False:
@@ -81,8 +86,8 @@ class RobotSpeak(State):
         data_dict_out = userdata.data_in
 
         question = data_dict_out['current_question']
-        rospy.loginfo(question.question.values)
-        rospy.loginfo(question.available_answers.values)
+        # rospy.loginfo(question.question.values)
+        # rospy.loginfo(question.available_answers.values)
         self.client.text_to_speech(question.text)
         # self.pub.publish(question.question.values[0])
 
@@ -194,13 +199,14 @@ class CheckAnswer(State):
     def __init__(self):
         State.__init__(self, outcomes=["next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
-        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
+
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
 
         # check if answer is correct
         is_answer_correct = data_dict_out['current_question'].check(
@@ -211,15 +217,32 @@ class CheckAnswer(State):
             rospy.logerr('Last question was correct')
             sentence = "Risposta corretta."
             sentence += userdata.data_in['personality'].get_positive()
+
+            if userdata.data_in['personality'].name == "AGREEABLENESS":
+                body_motion = "middle_arms_side_to_side"
+                eyes_motion = "happy"
+            elif userdata.data_in['personality'].name == "ANTAGONIST":
+                body_motion = ""
+                eyes_motion = "bored"
+
             rospy.loginfo(sentence)
+
         elif is_answer_correct == False:
             # say negative feedback
             rospy.logerr('Last question was wrong')
             sentence = "Risposta sbagliata!"
             sentence += userdata.data_in['personality'].get_negative()
+
+            if userdata.data_in['personality'].name == "AGREEABLENESS":
+                body_motion = ""
+                eyes_motion = "sad"
+            elif userdata.data_in['personality'].name == "ANTAGONIST":
+                body_motion = ""
+                eyes_motion = "angry"
+
             rospy.loginfo(sentence)
 
-        self.client.text_to_speech(sentence)
+        proxy(Behavior(text=sentence, body=body_motion, eyes=eyes_motion))
         data_dict_out['current_question'].done = True
         userdata.data_out = data_dict_out
 

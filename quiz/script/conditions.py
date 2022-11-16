@@ -1,6 +1,6 @@
 from enum import Enum, IntEnum
 
-class FaceConditions(IntEnum):
+class BodyConditions(IntEnum):
     FRONT = 1
     SIDE = 2
 
@@ -14,17 +14,17 @@ class ExperimentConditions(Enum):
     """Define the experiment conditions
     Note: each key definition has to contain an integer identifier
     """
-    _1_FRONT_ANTAGONIST = FaceConditions.FRONT, PersonalityConditions.ANTAGONIST
-    _2_FRONT_AGREEABLENESS = FaceConditions.FRONT, PersonalityConditions.AGREEABLENESS
-    _3_SIDE_ANTAGONIST = FaceConditions.SIDE, PersonalityConditions.ANTAGONIST
-    _4_SIDE_AGREEABLENESS = FaceConditions.SIDE, PersonalityConditions.AGREEABLENESS
+    _1_FRONT_ANTAGONIST = BodyConditions.FRONT, PersonalityConditions.ANTAGONIST
+    _2_FRONT_AGREEABLENESS = BodyConditions.FRONT, PersonalityConditions.AGREEABLENESS
+    _3_SIDE_ANTAGONIST = BodyConditions.SIDE, PersonalityConditions.ANTAGONIST
+    _4_SIDE_AGREEABLENESS = BodyConditions.SIDE, PersonalityConditions.AGREEABLENESS
 
-    def __init__(self, face, personality):
-        self.face = face
+    def __init__(self, body, personality):
+        self.body = body
         self.personality = personality
 
     def __str__(self):
-        return f"{self.face.name} {self.personality.name}"
+        return f"{self.body.name} {self.personality.name}"
 
     @classmethod
     def value_of(cls, value):
