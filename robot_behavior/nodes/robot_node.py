@@ -29,10 +29,8 @@ class BehaviourNode:
 
     def __init__(self):
 
-        self.say = Speech("it_IT")
-        self.move_body = Gesture()
-        self.move_eyes = Eyes()
-        self.modes = [self.say, self.move_body, self.move_eyes]
+        self.modes = [Speech, Gesture, Eyes]
+        self.active_modes = []
         self.execute_behavior = rospy.Service(
             'behaviour', ExecuteBehavior, self.cb)
 
@@ -57,18 +55,22 @@ class BehaviourNode:
 
     def run(self):
         try:
-            for m in self.modes:
+            for m in self.active_modes:
                 m.execute()
-            return ExecuteBehaviorResponse(True)
+            res = True
         except Exception as e:
             rospy.logerr(e)
             self.stop()
-            return ExecuteBehaviorResponse(False)
+            res = False
+        self.clear()
+        return ExecuteBehaviorResponse(res)
 
     def stop(self):
-        for m in self.modes:
+        for m in self.active_modes:
             m.stop()
 
+    def clear(self):
+        self.active_modes = []
 
 def default_modes():
 
