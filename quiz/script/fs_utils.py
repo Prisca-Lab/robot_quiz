@@ -36,7 +36,7 @@ class QuizQuestion:
         self.available_answers = row[INTENT_OPTIONS]
         self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
 
-        self.number = QuizQuestion.counter
+        self.id = QuizQuestion.counter
         QuizQuestion.counter += 1
         
         self.text = self.get_text()
@@ -59,7 +59,7 @@ class QuizQuestion:
         options = ""
         for title, value in title_values:
             options += title + ", " + value + ". "
-        text = "Domanda numero " + str(self.number) + ". " + self.question + ". " + options
+        text = "Domanda numero " + str(self.id) + ". " + self.question + ". " + options
         return text
         
     def get_hinted(self) -> str:
