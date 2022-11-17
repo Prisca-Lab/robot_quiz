@@ -13,7 +13,7 @@ Domanda 1
 Dove nasce Leonardo da vinci?
 Firenze
 Vinci
-Anchiano
+Anchiano (corretta)
 Arezzo
 
 Domanda 2
@@ -26,16 +26,16 @@ A che anno e' attribuito il disegno dell'automa cavaliere?
 Domanda 3
 Leonardo concentra i suoi studi sull'automazione con lo scopo di?
 aumentare la produzione di cibo
-migliorare la vita delle persone (corretta)
-costruire armi
 divertire la corte
+costruire armi
+migliorare la vita delle persone (corretta)
 
 Domanda 4
 Leonardo disegna l'automa cavaliere per scopi?
-militari
 intrattenimento
+agricoli
 assistenza
-artistici
+militari
 
 Domanda 5
 In che anno muore Leonardo da Vinci? (info non e' nel testo)
