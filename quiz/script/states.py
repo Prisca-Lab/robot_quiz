@@ -24,7 +24,6 @@ class Initial(State):
     def __init__(self):
         State.__init__(self, outcomes=['start'],  input_keys=['data_in'],
                        output_keys=['data_out'])
-        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
@@ -77,20 +76,19 @@ class RobotSpeak(State):
     def __init__(self):
         State.__init__(self, outcomes=["to_human"], input_keys=[
             "data_in"], output_keys=["data_out"])
-        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
-
         question = data_dict_out['current_question']
-        # rospy.loginfo(question.question.values)
-        # rospy.loginfo(question.available_answers.values)
-        self.client.text_to_speech(question.text)
-        # self.pub.publish(question.question.values[0])
+        rospy.logdebug(question.available_answers.values)
 
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+        proxy_response = proxy(
+            Behavior(text=question.text, body="neutral", eyes="neutral"))
+        rospy.loginfo("behavior has been executed")
         userdata.data_out = data_dict_out
         return 'to_human'
 
@@ -114,12 +112,17 @@ class HumanTurn(State):
 
         try:
             rospy.loginfo(f'Waiting {TIME_OUT} seconds for user response')
-            rospy.wait_for_service('ask_user', timeout=TIME_OUT)
-            proxy = rospy.ServiceProxy('ask_user', AskUser)
+            try:
+                rospy.wait_for_service('ask_user', timeout=TIME_OUT)
+            except rospy.ROSException as e:
+                rospy.logerr("ask_user service not available")
+                exit(1)
 
+            proxy = rospy.ServiceProxy('ask_user', AskUser)
             proxy_response = proxy("")
             response = proxy_response.user_intent
-            rospy.loginfo(response)
+
+            rospy.loginfo(f"user response {response}")
             if response in INTENT_OPTIONS:
                 data_dict_out['answer'] = response
                 userdata.data_out = data_dict_out
@@ -130,6 +133,10 @@ class HumanTurn(State):
 
             elif response == "no_answer":
                 rospy.loginfo("User did not answer")
+                return "no_answer"
+
+            elif response == "ripeti":
+                rospy.loginfo("User asked to repeat the question")
                 return "no_answer"
             else:
                 rospy.logerr("Intent not recognized")
@@ -153,6 +160,8 @@ class RepeatTurn(State):
         data_dict_out = userdata.data_in
         rospy.loginfo(f"Tentative: {data_dict_out['tentative']}")
         userdata.data_out = data_dict_out
+
+        # can repeat the same question only 2 times
         if data_dict_out['tentative'] < 2:
             data_dict_out['tentative'] += 1
             return 'question'
@@ -165,18 +174,19 @@ class Hint(State):
     def __init__(self):
         State.__init__(self, outcomes=["question", "next_question"], input_keys=[
             "data_in"], output_keys=["data_out"])
-        self.client = Speech("it_IT")
 
     def execute(self, userdata):
         rospy.logdebug(
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
-        question = data_dict_out['current_question']
         hint = data_dict_out['personality'].get_hint()
-        self.client.text_to_speech(hint)
-        if question.type == "question":
-            hinted_question = question.get_hinted()
+        
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+        proxy(Behavior(text=hint))
+
+        if data_dict_out['current_question'].type == "question":
+            hinted_question = data_dict_out['current_question'].get_hinted()
             data_dict_out['current_question'] = hinted_question
             userdata.data_out = data_dict_out
             return 'question'
@@ -207,6 +217,7 @@ class CheckAnswer(State):
         data_dict_out = userdata.data_in
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+        personality = data_dict_out['personality']
 
         # check if answer is correct
         is_answer_correct = data_dict_out['current_question'].check(
@@ -215,13 +226,13 @@ class CheckAnswer(State):
         if is_answer_correct == True:
             # say positive feedback
             rospy.logerr('Last question was correct')
-            sentence = "Risposta corretta."
-            sentence += userdata.data_in['personality'].get_positive()
+            sentence = "Risposta corretta. "
+            sentence += personality.get_positive()
 
-            if userdata.data_in['personality'].name == "AGREEABLENESS":
+            if personality.name == "AGREEABLENESS":
                 body_motion = "middle_arms_side_to_side"
                 eyes_motion = "happy"
-            elif userdata.data_in['personality'].name == "ANTAGONIST":
+            elif personality.name == "ANTAGONIST":
                 body_motion = ""
                 eyes_motion = "bored"
 
@@ -230,14 +241,14 @@ class CheckAnswer(State):
         elif is_answer_correct == False:
             # say negative feedback
             rospy.logerr('Last question was wrong')
-            sentence = "Risposta sbagliata!"
-            sentence += userdata.data_in['personality'].get_negative()
+            sentence = "Risposta sbagliata! "
+            sentence += personality.get_negative()
 
-            if userdata.data_in['personality'].name == "AGREEABLENESS":
-                body_motion = ""
+            if personality.name == "AGREEABLENESS":
+                body_motion = "open_arms_provocative"
                 eyes_motion = "sad"
-            elif userdata.data_in['personality'].name == "ANTAGONIST":
-                body_motion = ""
+            elif personality.name == "ANTAGONIST":
+                body_motion = "cover_face_provocative"
                 eyes_motion = "angry"
 
             rospy.loginfo(sentence)
@@ -259,6 +270,9 @@ class Final(State):
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
+
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+        proxy(Behavior(text="Grazie per aver giocato con me!", body="nod"))
 
         userdata.data_out = data_dict_out
         return 'succeeded'
