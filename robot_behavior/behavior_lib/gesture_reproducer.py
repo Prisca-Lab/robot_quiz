@@ -28,18 +28,20 @@ class Gesture(BehaviourMode):
             goal = PlayMotionGoal()
             goal.motion_name = action_name
             goal.skip_planning = False
-            goal.priority = 0  # Optional
+            goal.priority = 100  # Optional
 
             rospy.loginfo(f'Sending goal with motion: {action_name}')
+            rospy.loginfo(f"executing {self.name} at {time.time()}")
             self.client.send_goal(goal)
             # we wait until the action won't finish
             try:
                 self.client.wait_for_result()
             except Exception as e:
-                print("Cannot retrieve action server result /tts")
+                rospy.loginfo("Cannot retrieve action server result /tts")
                 exit(1)
         else:
             rospy.logerr("No action name passed as input")
+        rospy.loginfo(f"Completed {self.name} at time {time.time()}")
         return
 
     def stop(self):
