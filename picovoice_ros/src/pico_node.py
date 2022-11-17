@@ -69,12 +69,9 @@ class IntentRecognition:
          commands.
          """
 
-        # self.rhino = None
-        # self.recorder = None
-
         self.recorder = PvRecorder(
             device_index=self._audio_device_index, frame_length=self.rhino.frame_length)
-        rospy.loginfo(self.recorder.get_audio_devices())
+        rospy.logdebug(self.recorder.get_audio_devices())
         self.recorder.start()
 
         self.wav_file = None
@@ -84,7 +81,7 @@ class IntentRecognition:
                 self.wav_file = wave.open(self._output_path, "w")
                 self.wav_file.setparams((1, 2, 16000, 512, "NONE", "NONE"))
 
-            rospy.loginfo(self.rhino.context_info)
+            # rospy.loginfo(self.rhino.context_info)
 
             rospy.loginfo(f"Using device: {self.recorder.selected_device}")
             rospy.loginfo(f"Detecting intent for {max_seconds} seconds")
@@ -100,19 +97,19 @@ class IntentRecognition:
                 if is_finalized:
                     inference = self.rhino.get_inference()
                     if inference.is_understood:
-                        print('{')
-                        print("  intent : '%s'" % inference.intent)
-                        print('  slots : {')
-                        for slot, value in inference.slots.items():
-                            print("    %s : '%s'" % (slot, value))
-                        print('  }')
-                        print('}\n')
+                        # print('{')
+                        # print("  intent : '%s'" % inference.intent)
+                        # print('  slots : {')
+                        # for slot, value in inference.slots.items():
+                        #     print("    %s : '%s'" % (slot, value))
+                        # print('  }')
+                        # print('}\n')
                         self.intent = inference.intent
                         self.recorder.delete()
                         return self.intent
                     else:
                         # self.intent = None
-                        print("Didn't understand the command.\n")
+                        rospy.loginfo("Didn't understand the command.\n")
             self.recorder.delete()
             return self.intent
         except Exception as e:
@@ -146,7 +143,7 @@ if __name__ == '__main__':
     rospy.myargv(argv=sys.argv)
 
     device_idx = rospy.get_param("~device")
-    rospy.loginfo(f'Available audio devices {PvRecorder.get_audio_devices()}')
+    rospy.logdebug(f'Available audio devices {PvRecorder.get_audio_devices()}')
     rospy.loginfo(f"Selected device at index: {device_idx}")
     P = PicoNode(device_idx)
     rospy.spin()

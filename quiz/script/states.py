@@ -87,7 +87,7 @@ class RobotSpeak(State):
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         proxy_response = proxy(
             Behavior(text=question.text, eyes="neutral"))  # TODO check body
-        rospy.loginfo("behavior has been executed")
+        rospy.logdebug("behavior has been executed")
         userdata.data_out = data_dict_out
         return 'to_human'
 
