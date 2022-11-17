@@ -32,7 +32,12 @@ class Gesture(BehaviourMode):
 
             rospy.loginfo(f'Sending goal with motion: {action_name}')
             self.client.send_goal(goal)
-            rospy.loginfo("Execute action without waiting for result...")
+            # we wait until the action won't finish
+            try:
+                self.client.wait_for_result()
+            except Exception as e:
+                print("Cannot retrieve action server result /tts")
+                exit(1)
         else:
             rospy.logerr("No action name passed as input")
         return
