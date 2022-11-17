@@ -8,8 +8,8 @@ from time import sleep  # Handle time
 from robot_behavior.msg import Behavior
 from robot_behavior.srv import ExecuteBehavior
 from picovoice_ros.srv import AskUser
-from script.pal_speech_client import Speech
-from script.conditions import ExperimentConditions, BodyConditions
+from script.conditions import BodyConditions
+from script.ctrl_robot_base import rotate_base
 
 TIME_OUT = 10
 STATE_INIT_SLEEP = 0.5
@@ -51,9 +51,6 @@ class Quiz(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         questions = data_dict_out['quiz_questions']
-        if BodyConditions.SIDE == data_dict_out['condition'].body:
-            # call function to rotate the body!
-            pass
 
         # proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         # proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
@@ -66,6 +63,16 @@ class Quiz(State):
                 data_dict_out['tentative'] = 1
                 data_dict_out['current_question'] = q
                 userdata.data_out = data_dict_out
+                rospy.loginfo(data_dict_out['current_question'].id)
+
+                if BodyConditions.SIDE == data_dict_out['condition'].body:
+                    # call function to rotate the body!
+                    if int(data_dict_out['current_question'].id) % 2 == 0:
+                        rotate_base(0.6)
+                    else:
+                        rotate_base(-0.6)
+                    rospy.loginfo("Rotating the base")
+
                 return 'question'
 
         userdata.data_out = data_dict_out
@@ -181,7 +188,7 @@ class Hint(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         hint = data_dict_out['personality'].get_hint()
-        
+
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         proxy(Behavior(text=hint))
 
@@ -272,7 +279,8 @@ class Final(State):
         data_dict_out = userdata.data_in
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        proxy(Behavior(text="Grazie per aver giocato con me!", body="nod", eyes="neutral"))
+        proxy(Behavior(text="Grazie per aver giocato con me!",
+              body="nod", eyes="neutral"))
 
         userdata.data_out = data_dict_out
         return 'succeeded'
