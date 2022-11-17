@@ -37,14 +37,14 @@ agricoli
 assistenza
 militari
 
-Domanda 5
+Domanda 5 (aiuto del robot)
 In che anno muore Leonardo da Vinci? (info non e' nel testo)
 1512
 1510 
 1528
 1519 (corretta)
 
-Domanda 6
+Domanda 6 (razionalita)
 Un mattone e una penna costano 1.10 euro in totale. Se il mattone costa 1 euro in piu' della penna, quanto costa la penna?
 0.10 euro
 0.05 euro (corretta)
