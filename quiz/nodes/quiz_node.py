@@ -41,6 +41,7 @@ class QuizNode(object):
     def run(self):
         rospy.loginfo('Quiz node running')
         outcome = self.state_manager.sm.execute()
+        rospy.signal_shutdown("Quiz node finished")
 
 
 if __name__ == "__main__":
@@ -62,4 +63,3 @@ if __name__ == "__main__":
         rospy.spin()
     except rospy.ROSInterruptException:
         rospy.logerr('Could not start quiz node.')
-    # node.run()
