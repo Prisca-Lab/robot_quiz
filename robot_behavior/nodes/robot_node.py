@@ -4,6 +4,7 @@ import logging
 import rospy
 import sys
 import os
+from threading import Thread
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -54,9 +55,16 @@ class BehaviourNode:
         return self.run()
 
     def run(self):
+        threads = []
         try:
             for m in self.active_modes:
-                m.execute()
+                threads.append(Thread(target=m.execute))
+
+            for t in threads:
+                t.start()
+
+            for t in threads:
+                t.join()
             res = True
         except Exception as e:
             rospy.logerr(e)
