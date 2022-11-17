@@ -18,6 +18,13 @@ catkin build
 source devel/setup.sh
 ```
 
+Kill the alive movements
+
+```sh
+rosnode kill /interaction_profile_manager 
+rosnode kill /head_manager
+```
+
 Launch the quiz, the arguments can also be accessed from the ros param server.
 ```sh
 roslaunch quiz run.launch user_id:=1 condition:=2
