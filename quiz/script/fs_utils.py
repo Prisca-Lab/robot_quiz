@@ -28,12 +28,16 @@ class QuizQuestion:
     row: pandas dataframe of a question
     type: question | hinted
     """
+    counter = 1
     def __init__(self, row, type="question") -> None:
         self.row_df = row
         self.type = type
-        self.question = row[["DOMANDA"]]
+        self.question = row[["DOMANDA"]].values[0]
         self.available_answers = row[INTENT_OPTIONS]
         self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
+
+        self.number = QuizQuestion.counter
+        QuizQuestion.counter += 1
         
         self.text = self.get_text()
         self.done = False
@@ -55,8 +59,8 @@ class QuizQuestion:
         options = ""
         for title, value in title_values:
             options += title + ", " + value + ". "
-
-        return self.question.values[0] + " " + options
+        text = "Domanda numero " + str(self.number) + ". " + self.question + ". " + options
+        return text
         
     def get_hinted(self) -> str:
         """return a question that contains a correct answer and a wrong answer
