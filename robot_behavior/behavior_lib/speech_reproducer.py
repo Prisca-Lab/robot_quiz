@@ -7,6 +7,7 @@ from sound_play.libsoundplay import SoundClient
 from behavior_lib.abstract_behaviour import BehaviourMode
 import time
 
+
 class Speech(BehaviourMode):
 
     def __init__(self, language):
@@ -21,15 +22,15 @@ class Speech(BehaviourMode):
     def execute(self):
         # assert type(data) is str, "Error, data input must be a string"
         if self.data is not None:
-            print(f"executing {self.name} at {time.time()}")
             try:
                 self.client.wait_for_server(timeout=rospy.Duration(5))
             except Exception as e:
-                print("Cannot connect to action server /tts")
+                rospy.logerr("Cannot connect to action server /tts")
                 exit(1)
             goal = TtsGoal()
             goal.rawtext.text = self.data
             goal.rawtext.lang_id = self.language
+            rospy.loginfo(f"executing {self.name} at {time.time()}")
             self.client.send_goal(goal)
         else:
             rospy.logerr("Please set data before executing")
@@ -37,9 +38,11 @@ class Speech(BehaviourMode):
         try:
             self.client.wait_for_result()
         except Exception as e:
-            print("Cannot retrieve action server result /tts")
+            rospy.logerr("Cannot retrieve action server result /tts")
             exit(1)
-        return 
+        
+        rospy.loginfo(f"Completed {self.name} at time {time.time()}")
+        return
 
     def stop(self):
         rospy.loginfo("canceling...")
