@@ -69,9 +69,9 @@ class Quiz(State):
                 if BodyConditions.SIDE == data_dict_out['condition'].body:
                     # call function to rotate the body!
                     if int(data_dict_out['current_question'].id) % 2 == 0:
-                        rotate_base(0.6)
+                        rotate_base(0.7)
                     else:
-                        rotate_base(-0.6)
+                        rotate_base(-0.7)
                     rospy.loginfo("Rotating the base")
 
                 return 'question'
@@ -284,8 +284,11 @@ class Final(State):
             f'In {self.__class__.__name__} state for {STATE_INIT_SLEEP} seconds')
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
-
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+
+        proxy(Behavior(text="Prima di salutarci, vorrei sapere se riesci a imitare il mio movimento."))
+        proxy(Behavior(body="angel_position"))
+
         proxy(Behavior(text="Grazie per aver giocato con me!",
               body="nod", eyes="neutral"))
 
