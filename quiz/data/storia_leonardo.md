@@ -39,6 +39,26 @@ militari
 
 Domanda 5
 In che anno muore Leonardo da Vinci? (info non e' nel testo)
+1512
+1510 
+1528
+1519 (corretta)
+
+Domanda 6
+Un mattone e una penna costano 1.10 euro in totale. Se il mattone costa 1 euro in piu' della penna, quanto costa la penna?
+0.10 euro
+0.05 euro (corretta)
+0.15 euro
+0.20 euro 
+
+
+Domanda 7 (non inclusa nel csv)
+Quale delle seguenti opere non e' di Leonardo da Vinci?
+Il Codice Atlantico
+Il Codice da Vinci (corretta)
+La Gioconda
+La Ultima Cena
+
 
 
 Manca 
