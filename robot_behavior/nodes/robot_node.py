@@ -37,7 +37,10 @@ class BehaviourNode:
 
     def cb(self, msg):
         rospy.loginfo("Received service request: %s", msg)
-        
+
+        # create instance of a BehaviorMode only if it is requested by the service call
+        # if not, the instance is not created
+
         if msg.robot_behavior.text:
             speech = self.modes[0]("it_IT")
             speech.data = msg.robot_behavior.text
@@ -52,11 +55,13 @@ class BehaviourNode:
             eyes = self.modes[2]()
             eyes.data = msg.robot_behavior.eyes
             self.active_modes.append(eyes)
+
         return self.run()
 
     def run(self):
         threads = []
         try:
+            # each thread executes the method execute of an active behavior mode
             for m in self.active_modes:
                 threads.append(Thread(target=m.execute))
 
@@ -65,6 +70,7 @@ class BehaviourNode:
 
             for t in threads:
                 t.join()
+
             res = True
         except Exception as e:
             rospy.logerr(e)
@@ -80,10 +86,10 @@ class BehaviourNode:
     def clear(self):
         self.active_modes = []
 
+
 def default_modes():
 
     behaviour = BehaviourNode()
-
     behaviour.say.data = "Ciao sono Antonio"
     behaviour.move_body.data = "nodding.yaml"
     behaviour.move_eyes.data = "sad"
