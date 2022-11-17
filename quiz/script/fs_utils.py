@@ -61,6 +61,12 @@ class QuizQuestion:
             options += title + ", " + value + ". "
         text = "Domanda numero " + str(self.id) + ". " + self.question + ". " + options
         return text
+
+    def get_pre_answer_hint_text(self):
+        """suggest the user which answer is correct
+        """
+        text = "Secondo me la scelta giusta è " + str(self.correct_answer_idx.values[0])
+        return text
         
     def get_hinted(self) -> str:
         """return a question that contains a correct answer and a wrong answer
