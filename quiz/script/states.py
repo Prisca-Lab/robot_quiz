@@ -55,8 +55,9 @@ class Quiz(State):
         # proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         # proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
 
-        # TODO add backup loop (if user not answer insert key)
+        # TODO add backup loop (if user not answer => insert key)
         # TODO disable the touchscreen
+        # TODO store the result of the quiz in a file
 
         for q in questions:
             if q.done == False:
