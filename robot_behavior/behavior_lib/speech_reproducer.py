@@ -35,7 +35,7 @@ class Speech(BehaviourMode):
             rospy.logerr("Please set data before executing")
         # we wait until the action won't finish
         try:
-            self.client.wait_for_result(timeout=rospy.Duration(5))
+            self.client.wait_for_result()
         except Exception as e:
             print("Cannot retrieve action server result /tts")
             exit(1)
