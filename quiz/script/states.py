@@ -33,7 +33,7 @@ class Initial(State):
         rospy.wait_for_service('behaviour', timeout=TIME_OUT)
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         proxy_response = proxy(
-            Behavior(text="Iniziamo!", body="nod", eyes="neutral"))
+            Behavior(text="Iniziamo!", body="open_arms_provocative", eyes="neutral"))
 
         response = proxy_response.success
 
@@ -55,10 +55,9 @@ class Quiz(State):
             # call function to rotate the body!
             pass
 
-        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
+        # proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
+        # proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
 
-        # TODO add domanda n. before the next question
         # TODO add backup loop (if user not answer insert key)
 
         for q in questions:
@@ -87,7 +86,7 @@ class RobotSpeak(State):
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         proxy_response = proxy(
-            Behavior(text=question.text, body="neutral", eyes="neutral"))
+            Behavior(text=question.text, eyes="neutral"))  # TODO check body
         rospy.loginfo("behavior has been executed")
         userdata.data_out = data_dict_out
         return 'to_human'
@@ -272,7 +271,7 @@ class Final(State):
         data_dict_out = userdata.data_in
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        proxy(Behavior(text="Grazie per aver giocato con me!", body="nod"))
+        proxy(Behavior(text="Grazie per aver giocato con me!", body="nod", eyes="neutral"))
 
         userdata.data_out = data_dict_out
         return 'succeeded'
