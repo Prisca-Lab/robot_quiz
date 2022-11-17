@@ -31,7 +31,7 @@ class Gesture(BehaviourMode):
             goal.priority = 100  # Optional
 
             rospy.loginfo(f'Sending goal with motion: {action_name}')
-            rospy.loginfo(f"executing {self.name} at {time.time()}")
+            start = time.time()
             self.client.send_goal(goal)
             # we wait until the action won't finish
             try:
@@ -41,7 +41,8 @@ class Gesture(BehaviourMode):
                 exit(1)
         else:
             rospy.logerr("No action name passed as input")
-        rospy.loginfo(f"Completed {self.name} at time {time.time()}")
+
+        rospy.loginfo(f"{self.name} lasted: {time.time() - start:.3f} seconds")
         return
 
     def stop(self):
@@ -68,8 +69,10 @@ class Gesture(BehaviourMode):
 
 def main():
     gesture = Gesture()
-    gesture.data = "Ciao"
+    gesture.data = "cover_face_provocative"
     gesture.execute()
 
 if __name__ == "__main__":
+    rospy.init_node("gesture_reproducer")
     main()
+    rospy.spin()

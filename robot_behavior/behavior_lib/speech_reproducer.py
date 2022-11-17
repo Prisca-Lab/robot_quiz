@@ -30,7 +30,7 @@ class Speech(BehaviourMode):
             goal = TtsGoal()
             goal.rawtext.text = self.data
             goal.rawtext.lang_id = self.language
-            rospy.loginfo(f"executing {self.name} at {time.time()}")
+            start = time.time()
             self.client.send_goal(goal)
         else:
             rospy.logerr("Please set data before executing")
@@ -41,7 +41,7 @@ class Speech(BehaviourMode):
             rospy.logerr("Cannot retrieve action server result /tts")
             exit(1)
         
-        rospy.loginfo(f"Completed {self.name} at time {time.time()}")
+        rospy.loginfo(f"{self.name} lasted: {time.time() - start:.3f} seconds")
         return
 
     def stop(self):

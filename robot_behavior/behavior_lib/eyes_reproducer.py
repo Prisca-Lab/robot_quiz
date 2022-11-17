@@ -16,12 +16,14 @@ class Eyes(BehaviourMode):
 
     # define publisher for changing robot facial expression
     def execute(self):
+        start = time.time()
         if self.data is not None:
             expression_msg = Expression()
             # expression_msg.header = std_msgs.msg.Header() #uncomment for version > 0.7.0
             expression_msg.expression = self.data
             rospy.loginfo(expression_msg)
-            print(f"executing {self.name} at {time.time()}")
+
+            rospy.loginfo(f"{self.name} lasted: {time.time() - start:.3f} seconds")
             self.eyes_pub.publish(expression_msg)
         else:
             rospy.logerr("Please set data before executing")
