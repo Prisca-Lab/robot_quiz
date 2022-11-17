@@ -51,6 +51,13 @@ Un mattone e una penna costano 1.10 euro in totale. Se il mattone costa 1 euro i
 0.15 euro
 0.20 euro 
 
+____________________________todo____________________________
+
+Manca 
+- persuasione esplicita
+
+
+____________________________extra____________________________
 
 Domanda 7 (non inclusa nel csv)
 Quale delle seguenti opere non e' di Leonardo da Vinci?
@@ -60,10 +67,6 @@ La Gioconda
 La Ultima Cena
 
 
-
-Manca 
-- domanda su razionalita'
-- persuasione esplicita
 
 
 
