@@ -10,7 +10,7 @@
     <arg name="user_id" /> 
     <param name="user_id" value="$(arg user_id)"/>
 
-    <node name="quiz" pkg="quiz" type="quiz_node.py" output="screen"/>
+    <node name="quiz" pkg="quiz" type="quiz_node.py" required="true" output="screen"/>
     <node name="voice" pkg="picovoice_ros" type="pico_node.py" args="_device:=-1" output="screen"/>
     <node name="robot" pkg="robot_behavior" type="robot_node.py" output="screen"/>
 
