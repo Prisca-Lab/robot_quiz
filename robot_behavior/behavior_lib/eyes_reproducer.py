@@ -21,7 +21,7 @@ class Eyes(BehaviourMode):
             expression_msg = Expression()
             # expression_msg.header = std_msgs.msg.Header() #uncomment for version > 0.7.0
             expression_msg.expression = self.data
-            rospy.loginfo(expression_msg)
+            rospy.logdebug(f"Set eyes to: {expression_msg.expression}")
 
             rospy.loginfo(f"{self.name} lasted: {time.time() - start:.3f} seconds")
             self.eyes_pub.publish(expression_msg)
