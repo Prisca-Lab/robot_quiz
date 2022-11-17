@@ -59,6 +59,7 @@ class Quiz(State):
         # proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
 
         # TODO add backup loop (if user not answer insert key)
+        # TODO disable the touchscreen
 
         for q in questions:
             if q.done == False:
