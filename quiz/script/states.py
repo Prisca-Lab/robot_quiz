@@ -97,6 +97,7 @@ class RobotSpeak(State):
             Behavior(text=question.text, eyes="neutral"))  # TODO check body
 
         if question.id == 5:
+            sleep(STATE_INIT_SLEEP)
             proxy_response = proxy(
                 Behavior(text=question.get_pre_answer_hint_text()))
 
