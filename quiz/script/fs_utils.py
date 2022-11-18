@@ -113,6 +113,17 @@ class Personality:
         return next(self.hint)[1] # [0] is the name of the personality type; [1] is the feedback sentence
 
 
+class LogResults:
+    def __init__(self, user_id, condition):
+        self.user_id = user_id
+        self.condition = condition
+        self.results = []
+
+    def log(self, question):
+        """add to a data structure the question_id, is_correct: bool, is_hinted: bool, tentatives: int  
+        """
+
+
 if __name__ == '__main__':
     P = Personality("AGREEABLENESS")
     print(P.get_positive())
