@@ -26,6 +26,7 @@ class IntentRecognition:
             access_key="30uXi1g4+23OWdquCouuIax2CfKWmTzfvC9IFkSrYmhKTAapX1q4Zg==",
             library_path=pvrhino.LIBRARY_PATH,
             model_path=MODEL,
+            sensitivity=0.5,
             context_path=CONTEXT,
             endpoint_duration_sec=1.0,
             require_endpoint=True,
@@ -35,6 +36,7 @@ class IntentRecognition:
         self._access_key = access_key
         self._library_path = library_path
         self._model_path = model_path
+        self._sensitivity = sensitivity
         self._context_path = context_path
         self._endpoint_duration_sec = endpoint_duration_sec
         self._require_endpoint = require_endpoint
@@ -45,6 +47,7 @@ class IntentRecognition:
                 access_key=self._access_key,
                 library_path=self._library_path,
                 model_path=self._model_path,
+                sensitivity=self._sensitivity,
                 context_path=self._context_path,
                 endpoint_duration_sec=self._endpoint_duration_sec,
                 require_endpoint=self._require_endpoint)
@@ -53,6 +56,7 @@ class IntentRecognition:
                 self._access_key,
                 self._library_path,
                 self._model_path,
+                self._sensitivity,
                 self._context_path,
                 self._require_endpoint
             )
