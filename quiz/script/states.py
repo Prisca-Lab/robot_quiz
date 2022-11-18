@@ -58,6 +58,11 @@ class Quiz(State):
         # TODO add backup loop (if user not answer => insert key)
         # TODO disable the touchscreen
         # TODO store the result of the quiz in a file
+        # TODO add movement of the robot and eye expression in hints
+        # TODO Check the answer and give feedback
+        # TODO Change last sentence with personality (with score?)
+        # TODO ? Idle behavior during questions?
+        # TODO Activate gaze tracker?
 
         for q in questions:
             if q.done == False:
