@@ -199,6 +199,10 @@ catkin_install_python(PROGRAMS src/pico_node.py
 #############
 ## Testing ##
 #############
+find_package(rostest REQUIRED)
+
+add_rostest(test/voice.test)
+catkin_add_nosetests(test/test_voice.py)
 
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_picovoice_ros.cpp)

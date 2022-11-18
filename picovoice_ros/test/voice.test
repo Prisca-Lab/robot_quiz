@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="picovoice_ros" type="pico_node.py" name="voice" args="_device:=-1" output="screen"/>
+  <test test-name="test_voice" pkg="picovoice_ros" type="test_voice.py" />
+</launch>
