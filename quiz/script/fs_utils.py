@@ -2,6 +2,7 @@
 from pathlib import Path
 import pandas as pd
 from itertools import cycle
+import csv
 
 INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
@@ -23,25 +24,27 @@ def load_file(filename):
     elif 'txt' in filename:
         return open(file_questions, "r").read()
 
+
 class QuizQuestion:
     """data structure for a quiz question
     row: pandas dataframe of a question
     type: question | hinted
     """
     counter = 1
+
     def __init__(self, row, type="question") -> None:
         self.row_df = row
         self.type = type
         self.question = row[["DOMANDA"]].values[0]
         self.available_answers = row[INTENT_OPTIONS]
-        self.correct_answer_idx = row[["CORRETTA"]] # store the name of the column that contains the right answer
+        # store the name of the column that contains the right answer
+        self.correct_answer_idx = row[["CORRETTA"]]
 
         self.id = QuizQuestion.counter
         QuizQuestion.counter += 1
-        
+
         self.text = self.get_text()
         self.done = False
-        
 
     def check(self, answer) -> bool:
         """check if the answer is correct
@@ -55,38 +58,49 @@ class QuizQuestion:
     def get_text(self):
         """build the string object containg the question and possible answers
         """
-        title_values = zip(self.available_answers.index.to_list(), self.available_answers.values.tolist())
+        title_values = zip(self.available_answers.index.to_list(),
+                           self.available_answers.values.tolist())
         options = ""
         for title, value in title_values:
             options += title + ", " + value + ". "
-        text = "Domanda numero " + str(self.id) + ". " + self.question + ". " + options
+        text = "Domanda numero " + \
+            str(self.id) + ". " + self.question + ". " + options
         return text
 
     def get_pre_answer_hint_text(self):
         """suggest the user which answer is correct
         """
-        text = "Secondo me la scelta giusta è " + str(self.correct_answer_idx.values[0])
+        text = "Secondo me la scelta giusta è " + \
+            str(self.correct_answer_idx.values[0])
         return text
-        
+
     def get_hinted(self) -> str:
         """return a question that contains a correct answer and a wrong answer
         """
-        hinted = self # is needed to maintain same id and not create a new object
+        hinted = self  # is needed to maintain same id and not create a new object
 
         correct_answer = self.row_df[self.correct_answer_idx.values]
         wrong_answers = self.available_answers.drop(self.correct_answer_idx)
         w1 = wrong_answers.iloc[[0]]
-        hinted_answers = pd.concat([correct_answer.T, w1]) if correct_answer.index[0] == "risposta_uno" else pd.concat([w1, correct_answer.T])
+        hinted_answers = pd.concat(
+            [correct_answer.T, w1]) if correct_answer.index[0] == "risposta_uno" else pd.concat([w1, correct_answer.T])
         hinted.available_answers = hinted_answers
         hinted.text = hinted.get_text()
         hinted.type = "hinted"
-        
+
         return hinted
+
+    @property
+    def is_hinted(self):
+        if self.type == "hinted":
+            return True
+        return False
 
     @property
     def len(self):
         return len(self.available_answers)
-        
+
+
 class Personality:
     def __init__(self, type: str) -> None:
         """
@@ -97,9 +111,10 @@ class Personality:
         self.feedback = load_file("feedback_personality.csv")
 
         fb = self.feedback[self.feedback["NOME_TIPO"] == type]
-        
+
         # use cycle to iterate over the same list
-        self.hint = cycle(self.on_hint[self.on_hint["NOME_TIPO"] == type].values.tolist())
+        self.hint = cycle(
+            self.on_hint[self.on_hint["NOME_TIPO"] == type].values.tolist())
         self.positive_fb = cycle(fb["POSITIVE_FB"].tolist())
         self.negative_fb = cycle(fb["NEGATIVE_FB"].tolist())
 
@@ -110,18 +125,38 @@ class Personality:
         return next(self.negative_fb)
 
     def get_hint(self):
-        return next(self.hint)[1] # [0] is the name of the personality type; [1] is the feedback sentence
+        # [0] is the name of the personality type; [1] is the feedback sentence
+        return next(self.hint)[1]
 
 
-class LogResults:
+class LogResult:
     def __init__(self, user_id, condition):
         self.user_id = user_id
         self.condition = condition
-        self.results = []
+        self.result = []
 
-    def log(self, question):
-        """add to a data structure the question_id, is_correct: bool, is_hinted: bool, tentatives: int  
-        """
+        self.filename = Path(__file__).parent.parent.joinpath(
+            "user_" + str(self.user_id) + "_condition" + self.condition.name + ".csv")
+        if self.filename.exists():
+            raise FileExistsError("File already exists, please change user_id")
+
+    def write(self):
+        print("saving result to file")
+        q = load_quiz_questions()
+        data_titles = []
+        for i in range(len(q)):
+            data_titles.append("question_id_" + str(i))
+            data_titles.append("correct_" + str(i))
+            data_titles.append("tentative_" + str(i))
+            data_titles.append("hinted_" + str(i))
+
+        titles = ["user_id", "condition"] + data_titles
+        out = [self.user_id, self.condition.name] + self.result
+        with open(self.filename, 'w', newline='') as myfile:
+            wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+            wr.writerow(titles)
+            wr.writerow(out)
+        print(f"Saved logs to {self.filename}")
 
 
 if __name__ == '__main__':

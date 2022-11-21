@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from script.state_manager import StateManager
+from script.conditions import ExperimentConditions
+from script.fs_utils import load_file, load_quiz_questions, Personality, LogResult
 import rospy
 import logging
 import sys
@@ -7,9 +10,6 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from script.fs_utils import load_file, load_quiz_questions, Personality
-from script.conditions import ExperimentConditions
-from script.state_manager import StateManager
 
 try:
     loglevel = os.environ["LOG_LEVEL"]
@@ -31,8 +31,12 @@ class QuizNode(object):
 
         self.personality = Personality(self.condition.personality.name)
 
-        self.state_manager = StateManager(
-            {"story": story, "quiz_questions": self.questions, "personality": self.personality, "condition": self.condition})
+        log = LogResult(self.user_id, self.condition)
+
+        data_in = {"log": log, "story": story, "quiz_questions": self.questions,
+                   "personality": self.personality, "condition": self.condition}
+
+        self.state_manager = StateManager(data_in)
 
         rospy.loginfo(
             f'User id: {self.user_id} \t Condition: {self.condition}')

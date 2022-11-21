@@ -52,12 +52,17 @@ class Quiz(State):
         data_dict_out = userdata.data_in
         questions = data_dict_out['quiz_questions']
 
-        # proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        # proxy_response = proxy(Behavior(body="neutral", eyes="neutral"))
+        log = data_dict_out['log']
+
+        if "current_question" in data_dict_out:
+            # append to list of log
+            log.result.extend([data_dict_out["current_question"].id, data_dict_out["is_answer_correct"],
+                              data_dict_out["tentative"], data_dict_out["current_question"].is_hinted])
+
+
 
         # TODO add backup loop (if user not answer => insert key)
         # TODO disable the touchscreen
-        # TODO store the result of the quiz in a file
         # TODO add movement of the robot and eye expression in hints
         # TODO Check the answer and give feedback
         # TODO Change last sentence with personality (with score?)
@@ -186,6 +191,7 @@ class RepeatTurn(State):
             return 'question'
         else:
             data_dict_out['current_question'].done = True
+            data_dict_out['is_answer_correct'] = False
             return 'next_question'
 
 
@@ -241,6 +247,7 @@ class CheckAnswer(State):
         # check if answer is correct
         is_answer_correct = data_dict_out['current_question'].check(
             data_dict_out['answer'])
+        data_dict_out['is_answer_correct'] = is_answer_correct
 
         if is_answer_correct == True:
             # say positive feedback
@@ -291,12 +298,14 @@ class Final(State):
         data_dict_out = userdata.data_in
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
 
-        proxy(Behavior(text="Prima di salutarci, vorrei sapere se riesci a imitare il mio movimento."))
+        proxy(Behavior(
+            text="Prima di salutarci, vorrei sapere se riesci a imitare il mio movimento.", eyes="neutral"))
         proxy(Behavior(body="angel_position"))
 
         proxy(Behavior(text="Grazie per aver giocato con me!",
               body="nod", eyes="neutral"))
 
+        data_dict_out["log"].write()
         userdata.data_out = data_dict_out
         return 'succeeded'
 
