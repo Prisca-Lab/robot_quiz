@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 from itertools import cycle
 import csv
+import os
 
 INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
@@ -135,8 +136,12 @@ class LogResult:
         self.condition = condition
         self.result = []
 
+        log_folder = "result_quiz_logs"
         self.filename = Path(__file__).parent.parent.joinpath(
-            "user_" + str(self.user_id) + "_condition" + self.condition.name + ".csv")
+            log_folder + str(self.user_id) + "_condition" + self.condition.name + ".csv")
+        os.makedirs(Path(__file__).parent.parent.joinpath(log_folder), exist_ok=False)
+
+
         if self.filename.exists():
             raise FileExistsError("File already exists, please change user_id")
 
