@@ -10,6 +10,9 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from script.state_manager import StateManager
+from script.conditions import ExperimentConditions
+from script.fs_utils import load_file, load_quiz_questions, Personality, LogResult
 
 try:
     loglevel = os.environ["LOG_LEVEL"]
