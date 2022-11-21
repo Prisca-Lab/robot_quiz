@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-from script.state_manager import StateManager
-from script.conditions import ExperimentConditions
-from script.fs_utils import load_file, load_quiz_questions, Personality, LogResult
 import rospy
 import logging
 import sys
