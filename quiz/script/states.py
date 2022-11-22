@@ -158,8 +158,10 @@ class HumanTurn(State):
                 return 'request_hint'
 
             elif response == "no_answer":
-                rospy.loginfo("User did not answer")
-                return "no_answer"
+                rospy.loginfo("User did not answer or answer was not recognized, mark as wrong")
+                data_dict_out['answer'] = response
+                userdata.data_out = data_dict_out
+                return "answer"
 
             elif response == "ripeti":
                 rospy.loginfo("User asked to repeat the question")
