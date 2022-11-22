@@ -61,11 +61,18 @@ class QuizQuestion:
         """
         title_values = zip(self.available_answers.index.to_list(),
                            self.available_answers.values.tolist())
-        options = ""
-        for title, value in title_values:
-            options += title + ", " + value + ". "
-        text = "Domanda numero " + \
-            str(self.id) + ". " + self.question + ". " + options
+        text_value = ""
+
+        if self.is_hinted:
+            values_list = list(title_values)
+            text_value = f"{values_list[0][0]}, {values_list[0][1]}. Oppure, {values_list[1][0]}, {values_list[1][1]}."
+        else:
+            options = ""
+            for title, value in title_values:
+                options += title + ", " + value + ". "
+                text_value = "Domanda numero " + \
+                    str(self.id) + ". " + self.question + ". " + options
+        text = text_value
         return text
 
     def get_pre_answer_hint_text(self):
@@ -86,8 +93,8 @@ class QuizQuestion:
         hinted_answers = pd.concat(
             [correct_answer.T, w1]) if correct_answer.index[0] == "risposta_uno" else pd.concat([w1, correct_answer.T])
         hinted.available_answers = hinted_answers
-        hinted.text = hinted.get_text()
         hinted.type = "hinted"
+        hinted.text = hinted.get_text()
 
         return hinted
 
