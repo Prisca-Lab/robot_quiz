@@ -14,10 +14,10 @@ class ExperimentConditions(Enum):
     """Define the experiment conditions
     Note: each key definition has to contain an integer identifier
     """
-    _1_FRONT_ANTAGONIST = BodyConditions.FRONT, PersonalityConditions.ANTAGONIST
-    _2_FRONT_AGREEABLENESS = BodyConditions.FRONT, PersonalityConditions.AGREEABLENESS
-    _3_SIDE_ANTAGONIST = BodyConditions.SIDE, PersonalityConditions.ANTAGONIST
-    _4_SIDE_AGREEABLENESS = BodyConditions.SIDE, PersonalityConditions.AGREEABLENESS
+    # _1_FRONT_ANTAGONIST = BodyConditions.FRONT, PersonalityConditions.ANTAGONIST
+    # _2_FRONT_AGREEABLENESS = BodyConditions.FRONT, PersonalityConditions.AGREEABLENESS
+    _1_SIDE_ANTAGONIST = BodyConditions.SIDE, PersonalityConditions.ANTAGONIST
+    _2_SIDE_AGREEABLENESS = BodyConditions.SIDE, PersonalityConditions.AGREEABLENESS
 
     def __init__(self, body, personality):
         self.body = body
