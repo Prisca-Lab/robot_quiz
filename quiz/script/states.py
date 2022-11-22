@@ -10,12 +10,15 @@ from robot_behavior.srv import ExecuteBehavior
 from picovoice_ros.srv import AskUser
 from script.conditions import BodyConditions
 from script.ctrl_robot_base import rotate_base
+from itertools import cycle
 
 TIME_OUT = 10
 STATE_INIT_SLEEP = 0.5
 
 INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
+
+ALIVE = cycle(["alive_1", "alive_2", "alive_5", "alive_6"])
 
 
 class Initial(State):
@@ -58,8 +61,6 @@ class Quiz(State):
             # append to list of log
             log.result.extend([data_dict_out["current_question"].id, data_dict_out["is_answer_correct"],
                               data_dict_out["tentative"], data_dict_out["current_question"].is_hinted])
-
-
 
         # TODO add backup loop (if user not answer => insert key)
         # TODO disable the touchscreen
@@ -105,7 +106,7 @@ class RobotSpeak(State):
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         proxy_response = proxy(
-            Behavior(text=question.text, eyes="neutral"))  # TODO check body
+            Behavior(text=question.text, eyes="neutral", body=next(ALIVE)))
 
         if question.id == 5:
             sleep(STATE_INIT_SLEEP)
@@ -208,7 +209,7 @@ class Hint(State):
         hint = data_dict_out['personality'].get_hint()
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        proxy(Behavior(text=hint))
+        proxy(Behavior(text=hint, body=next(ALIVE)))
 
         if data_dict_out['current_question'].type == "question":
             hinted_question = data_dict_out['current_question'].get_hinted()
