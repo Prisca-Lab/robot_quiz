@@ -75,7 +75,7 @@ class Quiz(State):
                 data_dict_out['tentative'] = 1
                 data_dict_out['current_question'] = q
                 userdata.data_out = data_dict_out
-                rospy.loginfo(data_dict_out['current_question'].id)
+                rospy.loginfo(f"Domanda n. {data_dict_out['current_question'].id}")
 
                 if BodyConditions.SIDE == data_dict_out['condition'].body:
                     # call function to rotate the body!
