@@ -13,7 +13,7 @@ from script.ctrl_robot_base import rotate_base
 from itertools import cycle
 
 TIME_OUT = 10
-STATE_INIT_SLEEP = 0.5
+STATE_INIT_SLEEP = 0.3
 
 INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
                   'risposta_tre', 'risposta_quattro']
@@ -103,10 +103,11 @@ class RobotSpeak(State):
         data_dict_out = userdata.data_in
         question = data_dict_out['current_question']
         rospy.logdebug(question.available_answers.values)
-
+        text = question.get_text()
+        rospy.loginfo(f"robot say: {text}")
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         proxy_response = proxy(
-            Behavior(text=question.text, eyes="neutral", body=next(ALIVE)))
+            Behavior(text=text, eyes="neutral", body=next(ALIVE)))
 
         if question.id == 5:
             sleep(STATE_INIT_SLEEP)
@@ -209,16 +210,18 @@ class Hint(State):
         hint = data_dict_out['personality'].get_hint()
 
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-        proxy(Behavior(text=hint, body=next(ALIVE)))
 
         if data_dict_out['current_question'].type == "question":
+            proxy(Behavior(text=hint, body=next(ALIVE)))
             hinted_question = data_dict_out['current_question'].get_hinted()
             data_dict_out['current_question'] = hinted_question
             userdata.data_out = data_dict_out
             return 'question'
         else:
             rospy.logerr('Questions can only be hinted one time')
+            proxy(Behavior(text="Posso fornire suggerimenti solo una volta.", body=next(ALIVE)))
             data_dict_out['current_question'].done = True
+            data_dict_out['is_answer_correct'] = False
             return 'next_question'
 
 
