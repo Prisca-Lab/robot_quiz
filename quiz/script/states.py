@@ -80,9 +80,9 @@ class Quiz(State):
                 if BodyConditions.SIDE == data_dict_out['condition'].body:
                     # call function to rotate the body!
                     if int(data_dict_out['current_question'].id) % 2 == 0:
-                        rotate_base(0.7)
+                        rotate_base(0.5)
                     else:
-                        rotate_base(-0.7)
+                        rotate_base(-0.5)
                     rospy.loginfo("Rotating the base")
 
                 return 'question'
