@@ -137,13 +137,16 @@ class LogResult:
         self.result = []
 
         log_folder = "result_quiz_logs"
+        name = "user_" + str(self.user_id) + "_condition" + \
+            self.condition.name + ".csv"
         self.filename = Path(__file__).parent.parent.joinpath(
-            log_folder + str(self.user_id) + "_condition" + self.condition.name + ".csv")
-        os.makedirs(Path(__file__).parent.parent.joinpath(log_folder), exist_ok=False)
-
+            log_folder, name)
+        os.makedirs(Path(__file__).parent.parent.joinpath(
+            log_folder), exist_ok=True)
 
         if self.filename.exists():
-            raise FileExistsError("File already exists, please change user_id")
+            raise FileExistsError(
+                f"File: {name} already exists, please change user_id")
 
     def write(self):
         print("saving result to file")
