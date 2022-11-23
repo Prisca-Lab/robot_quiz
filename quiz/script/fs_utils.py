@@ -160,10 +160,10 @@ class LogResult:
         q = load_quiz_questions()
         data_titles = []
         for i in range(len(q)):
-            data_titles.append("question_id_" + str(i))
-            data_titles.append("correct_" + str(i))
-            data_titles.append("tentative_" + str(i))
-            data_titles.append("hinted_" + str(i))
+            data_titles.append("question_id_" + str(i+1))
+            data_titles.append("correct_" + str(i+1))
+            data_titles.append("tentative_" + str(i+1))
+            data_titles.append("hinted_" + str(i+1))
 
         titles = ["user_id", "condition"] + data_titles
         out = [self.user_id, self.condition.name] + self.result
