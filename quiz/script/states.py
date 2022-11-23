@@ -20,7 +20,7 @@ INTENT_OPTIONS = ['risposta_uno', 'risposta_due',
 
 ALIVE = cycle(["alive_1", "alive_2", "alive_5", "alive_6"])
 
-
+ROT_ALPHA = 0.5
 class Initial(State):
     """Read Initial story and initiate the quiz"""
 
@@ -80,9 +80,9 @@ class Quiz(State):
                 if BodyConditions.SIDE == data_dict_out['condition'].body:
                     # call function to rotate the body!
                     if int(data_dict_out['current_question'].id) % 2 == 0:
-                        rotate_base(0.5)
+                        rotate_base(ROT_ALPHA)
                     else:
-                        rotate_base(-0.5)
+                        rotate_base(-ROT_ALPHA)
                     rospy.loginfo("Rotating the base")
 
                 return 'question'
@@ -306,7 +306,7 @@ class Final(State):
         sleep(STATE_INIT_SLEEP)
         data_dict_out = userdata.data_in
         proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
-
+        rotate_base(ROT_ALPHA)
         proxy(Behavior(
             text="Prima di salutarci, vorrei sapere se riesci a imitare il mio movimento.", eyes="neutral"))
         proxy(Behavior(body="angel_position"))
