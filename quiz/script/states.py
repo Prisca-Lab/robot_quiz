@@ -189,6 +189,7 @@ class RepeatTurn(State):
         rospy.loginfo(f"Tentative: {data_dict_out['tentative']}")
         userdata.data_out = data_dict_out
 
+        proxy = rospy.ServiceProxy('behaviour', ExecuteBehavior)
         # can repeat the same question only 2 times
         if data_dict_out['tentative'] < 2:
             data_dict_out['tentative'] += 1
@@ -196,6 +197,8 @@ class RepeatTurn(State):
         else:
             data_dict_out['current_question'].done = True
             data_dict_out['is_answer_correct'] = False
+            rospy.logerr('Questions can only be repeated two times')
+            proxy(Behavior(text="Posso ripetere la domanda solo due volte.", body=next(ALIVE)))
             return 'next_question'
 
 
