@@ -12,7 +12,7 @@ The core of the codebase is contained in the four packages:
 
 The collected data is stored in the `results` folder.
 
-<details><summary>Install</summary>
+## Install
 ```sh
 mkdir ~/ros_ws
 cd ~/ros_ws
@@ -20,7 +20,7 @@ cd ~/ros_ws
 
 Clone the repo as source folder
 ```sh
-git clone git@github.com:Prisca-Lab/quiz_futuro_remoto.git src
+git clone git@github.com:Prisca-Lab/robot_quiz.git src
 git submodule update --init --recursive
 ```
 
@@ -30,7 +30,6 @@ cd ~/ros_ws
 catkin build
 source devel/setup.sh
 ```
-</details>
 
 ## Prepare the robot
 
@@ -70,9 +69,8 @@ The conditions are following:
 If a bag is already recorded containing data from the user, an error is raised and returned to user.
 
 
-<details><summary>State Machine</summary>
+### State Machine of the interaction
 ![img](/quiz/data/sm.png)
-</details>
 
 For testing the logic, use the keyboard mode.
 
