@@ -1,4 +1,16 @@
-# futuro_remoto
+# Code Annex of Sweet Robot O’Mine
+
+This repository contains the code developed for replicating the experiment described in the paper "Sweet Robot O’Mine - How a Cheerful Robot Boosts Users' Performance in a Game Scenario".
+
+The submodules `hri_msgs`, `pal_msgs` and `play_motion` are required for building the project and frozen to a specific commit.
+
+The core of the codebase is contained in the four packages:
+1. quiz
+2. picovoice_ros
+3. robot_behavior
+4. keyboard_quiz
+
+The collected data is stored in the `results` folder.
 
 <details><summary>Install</summary>
 ```sh
@@ -37,10 +49,8 @@ rosnode kill /pal_chrome
 ```
 ## Let's start the quiz
 
-Launch the quiz.
-Two options are available:
-1. `roslaunch quiz run.launch` is using the microphone for intent recognition
-2. `roslaunch quiz run_keyboard.launch` is using the keyboard for intent recognition
+Launch the quiz:
+`roslaunch quiz run.launch` is using the microphone for intent recognition
 
 Both launch files require arguments `user_id` and `condition`. The arguments can also be accessed from the ros param server.
 
@@ -53,7 +63,18 @@ The parameter for selecting the audio device is found in `quiz/launch/run.launch
 roslaunch quiz run.launch user_id:=1 condition:=2
 ```
 
-If the intent recognition is not working, use the keyboard mode.
+The conditions are following:
+1. ANTAGONIST
+2. AGREEABLENESS
+
+If a bag is already recorded containing data from the user, an error is raised and returned to user.
+
+
+<details><summary>State Machine</summary>
+![img](/quiz/data/sm.png)
+</details>
+
+For testing the logic, use the keyboard mode.
 
 ### Keyboard Mode
 
@@ -61,21 +82,5 @@ If the intent recognition is not working, use the keyboard mode.
 roslaunch quiz run_keyboard.launch user_id:=1 condition:=2
 ```
 
-The conditions are following:
-1. SIDE ANTAGONIST
-2. SIDE AGREEABLENESS
-
-If a bag is already recorded containing data from the user, an error is raised and returned to user.
-
-
-<details><summary>State Machine</summary>
-![img](quiz/data/sm.png)
-</details>
-
-The four packages are:
-1. quiz
-2. picovoice_ros
-3. robot_behavior
-4. keyboard_quiz
 
 
